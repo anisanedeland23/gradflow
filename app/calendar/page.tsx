@@ -231,263 +231,254 @@ export default function CalendarPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-100">
-      <div className="flex flex-col lg:flex-row">
-        <Sidebar />
+    <main className="gf-page">
+      <Sidebar />
 
-        <section className="flex-1 p-3 sm:p-4 lg:p-5">
-          {/* PAGE HEADER */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
-            <h1 className="text-3xl font-bold text-slate-800">Calendar</h1>
+      <section className="min-h-screen p-3 pt-20 sm:p-4 sm:pt-20 lg:ml-72 lg:p-5">
+        {/* PAGE HEADER */}
+        <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <h1 className="text-3xl font-bold text-slate-800">Calendar</h1>
 
-            <p className="mt-2 text-slate-500">
-              Manage your academic and career schedule.
-            </p>
+          <p className="mt-2 text-slate-500">
+            Manage your academic and career schedule.
+          </p>
 
-            {/* ACTION BAR */}
-            <div className="mt-6 flex flex-col gap-4 rounded-3xl bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-slate-800">
-                  Event Manager
-                </h2>
+          {/* ACTION BAR */}
+          <div className="mt-6 flex flex-col gap-4 rounded-3xl bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-800">
+                Event Manager
+              </h2>
 
-                <p className="text-sm text-slate-500">
-                  Create and manage your schedule.
-                </p>
+              <p className="text-sm text-slate-500">
+                Create and manage your schedule.
+              </p>
+            </div>
+
+            <AppButton variant="primary" size="lg" onClick={openAddModal}>
+              + Add Event
+            </AppButton>
+          </div>
+        </div>
+
+        {/* CALENDAR UI */}
+        <div className="mt-4 rounded-3xl bg-white p-4 shadow-sm">
+          {/* TOP BAR */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-slate-800">
+                Monthly Calendar
+              </h2>
+
+              <p className="text-sm text-slate-500">Visualize your schedule</p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <AppButton
+                variant="secondary"
+                size="md"
+                onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+              >
+                ←
+              </AppButton>
+
+              <div className="rounded-xl bg-slate-100 px-4 py-2 font-semibold text-slate-700">
+                {format(currentMonth, "MMMM yyyy")}
               </div>
 
-              <AppButton variant="primary" size="lg" onClick={openAddModal}>
-                + Add Event
+              <AppButton
+                variant="secondary"
+                size="md"
+                onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+              >
+                →
               </AppButton>
             </div>
           </div>
 
-          {/* CALENDAR UI */}
-          <div className="mt-4 rounded-3xl bg-white p-4 shadow-sm">
-            {/* TOP BAR */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-slate-800">
-                  Monthly Calendar
-                </h2>
-
-                <p className="text-sm text-slate-500">
-                  Visualize your schedule
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                <AppButton
-                  variant="secondary"
-                  size="md"
-                  onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+          {/* CALENDAR GRID */}
+          <div className="mt-6 overflow-x-auto pb-2">
+            <div className="grid min-w-[720px] grid-cols-7 gap-2">
+              {/* DAY LABELS */}
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                <div
+                  key={day}
+                  className="rounded-xl bg-slate-100 py-3 text-center text-sm font-semibold text-slate-600"
                 >
-                  ←
-                </AppButton>
-
-                <div className="rounded-xl bg-slate-100 px-4 py-2 font-semibold text-slate-700">
-                  {format(currentMonth, "MMMM yyyy")}
+                  {day}
                 </div>
+              ))}
 
-                <AppButton
-                  variant="secondary"
-                  size="md"
-                  onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                >
-                  →
-                </AppButton>
-              </div>
+              {/* EMPTY CELLS BEFORE DATE 1 */}
+              {emptyDays.map((_, index) => (
+                <div key={index} className="h-28 rounded-2xl bg-transparent" />
+              ))}
+
+              {/* DAYS */}
+              {daysInMonth.map((day) => {
+                const dayEvents = events.filter(
+                  (event) => event.date === format(day, "yyyy-MM-dd"),
+                );
+
+                return (
+                  <div
+                    key={day.toString()}
+                    onClick={() => {
+                      const hasEvents = dayEvents.length > 0;
+
+                      if (hasEvents) {
+                        setSelectedDate(day);
+                        setIsDateModalOpen(true);
+                        return;
+                      }
+
+                      openAddModalFromDate(day);
+                    }}
+                    className={`h-28 cursor-pointer rounded-2xl border p-2 transition hover:scale-[1.02] hover:shadow-md ${
+                      isToday(day)
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-slate-200 bg-white"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span
+                        className={`text-sm font-semibold ${
+                          isToday(day) ? "text-blue-600" : "text-slate-700"
+                        }`}
+                      >
+                        {format(day, "d")}
+                      </span>
+                    </div>
+
+                    <div className="mt-2 flex flex-col gap-1 overflow-hidden">
+                      {dayEvents.slice(0, 2).map((event) => {
+                        const isDeadline =
+                          event.type === "assignment" ||
+                          event.type === "quiz" ||
+                          event.type === "test";
+
+                        return (
+                          <div
+                            key={event.id}
+                            className={`truncate rounded-lg px-2 py-1 text-[10px] font-medium text-white ${
+                              isDeadline ? "bg-red-500" : "bg-blue-500"
+                            }`}
+                          >
+                            {event.title}
+                          </div>
+                        );
+                      })}
+
+                      {dayEvents.length > 2 && (
+                        <div className="text-[10px] text-slate-500">
+                          +{dayEvents.length - 2} more
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* EVENT LIST */}
+        <div className="mt-4 rounded-3xl bg-white p-4 shadow-sm">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-800">
+                Upcoming Events
+              </h2>
+
+              <p className="text-sm text-slate-500">
+                Your scheduled activities and deadlines.
+              </p>
             </div>
 
-            {/* CALENDAR GRID */}
-            <div className="mt-6 overflow-x-auto pb-2">
-              <div className="grid min-w-[720px] grid-cols-7 gap-2">
-                {/* DAY LABELS */}
-                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
-                  (day) => (
-                    <div
-                      key={day}
-                      className="rounded-xl bg-slate-100 py-3 text-center text-sm font-semibold text-slate-600"
-                    >
-                      {day}
-                    </div>
-                  ),
-                )}
+            <div className="rounded-xl bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600">
+              {events.length} Events
+            </div>
+          </div>
 
-                {/* EMPTY CELLS BEFORE DATE 1 */}
-                {emptyDays.map((_, index) => (
+          {events.length === 0 && (
+            <div className="mt-6">
+              <EmptyState
+                title="No events yet."
+                description="Add your first event to organize your schedule."
+              />
+            </div>
+          )}
+
+          <div className="mt-4 flex flex-col gap-3">
+            {[...events]
+              .sort(
+                (a, b) =>
+                  new Date(a.date).getTime() - new Date(b.date).getTime(),
+              )
+              .map((event) => {
+                const isDeadline =
+                  event.type === "assignment" ||
+                  event.type === "quiz" ||
+                  event.type === "test";
+
+                return (
                   <div
-                    key={index}
-                    className="h-28 rounded-2xl bg-transparent"
-                  />
-                ))}
+                    key={event.id}
+                    className={`flex flex-col gap-4 rounded-2xl border p-4 transition hover:shadow-md sm:flex-row sm:items-center sm:justify-between ${
+                      isDeadline
+                        ? "border-red-200 bg-red-50"
+                        : "border-blue-200 bg-blue-50"
+                    }`}
+                  >
+                    <div>
+                      <h3 className="font-semibold text-slate-800">
+                        {event.title}
+                      </h3>
 
-                {/* DAYS */}
-                {daysInMonth.map((day) => {
-                  const dayEvents = events.filter(
-                    (event) => event.date === format(day, "yyyy-MM-dd"),
-                  );
+                      <div className="mt-1 flex flex-wrap items-center gap-2">
+                        <span className="rounded-full bg-white px-2 py-1 text-xs font-medium text-slate-600">
+                          {event.type}
+                        </span>
 
-                  return (
-                    <div
-                      key={day.toString()}
-                      onClick={() => {
-                        const hasEvents = dayEvents.length > 0;
-
-                        if (hasEvents) {
-                          setSelectedDate(day);
-                          setIsDateModalOpen(true);
-                          return;
-                        }
-
-                        openAddModalFromDate(day);
-                      }}
-                      className={`h-28 cursor-pointer rounded-2xl border p-2 transition hover:scale-[1.02] hover:shadow-md ${
-                        isToday(day)
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-slate-200 bg-white"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`text-sm font-semibold ${
-                            isToday(day) ? "text-blue-600" : "text-slate-700"
-                          }`}
-                        >
-                          {format(day, "d")}
+                        <span className="text-sm text-slate-500">
+                          {event.date}
                         </span>
                       </div>
-
-                      <div className="mt-2 flex flex-col gap-1 overflow-hidden">
-                        {dayEvents.slice(0, 2).map((event) => {
-                          const isDeadline =
-                            event.type === "assignment" ||
-                            event.type === "quiz" ||
-                            event.type === "test";
-
-                          return (
-                            <div
-                              key={event.id}
-                              className={`truncate rounded-lg px-2 py-1 text-[10px] font-medium text-white ${
-                                isDeadline ? "bg-red-500" : "bg-blue-500"
-                              }`}
-                            >
-                              {event.title}
-                            </div>
-                          );
-                        })}
-
-                        {dayEvents.length > 2 && (
-                          <div className="text-[10px] text-slate-500">
-                            +{dayEvents.length - 2} more
-                          </div>
-                        )}
-                      </div>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
 
-          {/* EVENT LIST */}
-          <div className="mt-4 rounded-3xl bg-white p-4 shadow-sm">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-slate-800">
-                  Upcoming Events
-                </h2>
-
-                <p className="text-sm text-slate-500">
-                  Your scheduled activities and deadlines.
-                </p>
-              </div>
-
-              <div className="rounded-xl bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600">
-                {events.length} Events
-              </div>
-            </div>
-
-            {events.length === 0 && (
-              <div className="mt-6">
-                <EmptyState
-                  title="No events yet."
-                  description="Add your first event to organize your schedule."
-                />
-              </div>
-            )}
-
-            <div className="mt-4 flex flex-col gap-3">
-              {[...events]
-                .sort(
-                  (a, b) =>
-                    new Date(a.date).getTime() - new Date(b.date).getTime(),
-                )
-                .map((event) => {
-                  const isDeadline =
-                    event.type === "assignment" ||
-                    event.type === "quiz" ||
-                    event.type === "test";
-
-                  return (
-                    <div
-                      key={event.id}
-                      className={`flex flex-col gap-4 rounded-2xl border p-4 transition hover:shadow-md sm:flex-row sm:items-center sm:justify-between ${
-                        isDeadline
-                          ? "border-red-200 bg-red-50"
-                          : "border-blue-200 bg-blue-50"
-                      }`}
-                    >
-                      <div>
-                        <h3 className="font-semibold text-slate-800">
-                          {event.title}
-                        </h3>
-
-                        <div className="mt-1 flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-white px-2 py-1 text-xs font-medium text-slate-600">
-                            {event.type}
-                          </span>
-
-                          <span className="text-sm text-slate-500">
-                            {event.date}
-                          </span>
-                        </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div
+                        className={`rounded-xl px-3 py-2 text-xs font-semibold ${
+                          isDeadline
+                            ? "bg-red-500 text-white"
+                            : "bg-blue-500 text-white"
+                        }`}
+                      >
+                        {isDeadline ? "DEADLINE" : "REMINDER"}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-2">
-                        <div
-                          className={`rounded-xl px-3 py-2 text-xs font-semibold ${
-                            isDeadline
-                              ? "bg-red-500 text-white"
-                              : "bg-blue-500 text-white"
-                          }`}
-                        >
-                          {isDeadline ? "DEADLINE" : "REMINDER"}
-                        </div>
+                      <AppButton
+                        variant="warning"
+                        size="icon"
+                        onClick={() => openEditEvent(event)}
+                      >
+                        ✏️
+                      </AppButton>
 
-                        <AppButton
-                          variant="warning"
-                          size="icon"
-                          onClick={() => openEditEvent(event)}
-                        >
-                          ✏️
-                        </AppButton>
-
-                        <AppButton
-                          variant="danger"
-                          size="icon"
-                          onClick={() => setEventToDelete(event)}
-                        >
-                          🗑
-                        </AppButton>
-                      </div>
+                      <AppButton
+                        variant="danger"
+                        size="icon"
+                        onClick={() => setEventToDelete(event)}
+                      >
+                        🗑
+                      </AppButton>
                     </div>
-                  );
-                })}
-            </div>
+                  </div>
+                );
+              })}
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
       {/* ADD / EDIT EVENT MODAL */}
       {isModalOpen && (

@@ -206,68 +206,63 @@ export default function Home() {
     goals.length === 0 ? 0 : Math.round(totalGoalProgress / goals.length);
 
   return (
-    <main className="min-h-screen bg-slate-100">
-      <div className="flex flex-col lg:flex-row">
-        {/* SIDEBAR */}
-        <Sidebar />
+    <main className="gf-page">
+      {/* SIDEBAR */}
+      <Sidebar />
 
-        {/* MAIN CONTENT */}
-        <section className="flex-1 p-3 sm:p-4 lg:p-5">
-          {/* HEADER */}
-          <Header />
+      {/* MAIN CONTENT */}
+      <section className="min-h-screen p-3 pt-20 sm:p-4 sm:pt-20 lg:ml-72 lg:p-5">
+        {/* HEADER */}
+        <Header />
 
-          {/* TODAY FOCUS */}
-          <div className="mt-3">
-            <TodayFocus
-              tasks={tasks}
-              setTasks={setTasks}
-              completedTasks={completedTasks}
-              updateStreak={updateStreak}
-            />
+        {/* TODAY FOCUS */}
+        <div className="mt-3">
+          <TodayFocus
+            tasks={tasks}
+            setTasks={setTasks}
+            completedTasks={completedTasks}
+            updateStreak={updateStreak}
+          />
+        </div>
+
+        {/* ROW 1 */}
+        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <ProgressOverview
+            progressPercentage={progressPercentage}
+            internshipProgress={internshipProgress}
+            goalsProgress={goalsProgress}
+          />
+
+          <DeadlineSection />
+
+          <StatsSection
+            tasks={tasks}
+            streak={streak}
+            internships={internships}
+            goals={goals}
+          />
+        </div>
+
+        {/* ROW 2 */}
+        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <ProductivitySnapshot
+            tasks={tasks}
+            internships={internships}
+            goals={goals}
+          />
+
+          <WeeklyFocus tasks={tasks} internships={internships} goals={goals} />
+
+          <ReminderNotes />
+        </div>
+
+        {/* ROW 3 */}
+        <div className="mt-3 grid grid-cols-1 gap-3 xl:grid-cols-3">
+          <div className="xl:col-span-2">
+            <RecentActivity />
           </div>
-
-          {/* ROW 1 */}
-          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-            <ProgressOverview
-              progressPercentage={progressPercentage}
-              internshipProgress={internshipProgress}
-              goalsProgress={goalsProgress}
-            />
-
-            <DeadlineSection />
-
-            <StatsSection
-              tasks={tasks}
-              streak={streak}
-              internships={internships}
-              goals={goals}
-            />
-          </div>
-
-          {/* ROW 2 */}
-          <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-            <ProductivitySnapshot
-              tasks={tasks}
-              internships={internships}
-              goals={goals}
-            />
-
-            <WeeklyFocus
-              tasks={tasks}
-              internships={internships}
-              goals={goals}
-            />
-            <ReminderNotes />
-          </div>
-
-          {/* ROW 3 */}
-          <div className="mt-3 grid grid-cols-1 gap-3 xl:grid-cols-3">
-            <div className="xl:col-span-2">
-              <RecentActivity />
-            </div>
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
   );
 }

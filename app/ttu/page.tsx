@@ -406,553 +406,305 @@ export default function TtuPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-100">
-      <div className="flex flex-col lg:flex-row">
-        {/* SIDEBAR */}
-        <Sidebar />
+    <main className="gf-page">
+      {/* SIDEBAR */}
+      <Sidebar />
 
-        {/* MAIN CONTENT */}
-        <section className="flex-1 p-3 sm:p-4 lg:p-5">
-          {/* PAGE HEADER */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      {/* MAIN CONTENT */}
+      <section className="min-h-screen p-3 pt-20 sm:p-4 sm:pt-20 lg:ml-72 lg:p-5">
+        {/* PAGE HEADER */}
+        <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-800">
+                TTU / Skripsi
+              </h1>
+
+              <p className="mt-2 text-slate-500">
+                Control center for your final project document, revisions,
+                guidance notes, and important deadlines.
+              </p>
+            </div>
+
+            <div className="w-fit rounded-2xl bg-blue-100 px-4 py-3 text-sm font-bold text-blue-700">
+              Skripsi Control Center
+            </div>
+          </div>
+        </div>
+
+        {/* TOP CONTROL GRID */}
+        <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
+          {/* MAIN DOCUMENT LINK */}
+          <div className="rounded-3xl bg-white p-6 shadow-sm xl:col-span-2">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h1 className="text-3xl font-bold text-slate-800">
-                  TTU / Skripsi
-                </h1>
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                  Main Document
+                </p>
 
-                <p className="mt-2 text-slate-500">
-                  Control center for your final project document, revisions,
-                  guidance notes, and important deadlines.
+                <h2 className="mt-2 text-xl font-bold text-slate-800">
+                  TTU Google Docs
+                </h2>
+
+                <p className="mt-1 text-sm text-slate-500">
+                  Save your main TTU / Skripsi document link here so it is easy
+                  to access.
                 </p>
               </div>
 
-              <div className="w-fit rounded-2xl bg-blue-100 px-4 py-3 text-sm font-bold text-blue-700">
-                Skripsi Control Center
+              <div
+                className={`rounded-xl px-3 py-2 text-xs font-semibold ${
+                  documentLink.trim() !== ""
+                    ? "bg-green-100 text-green-700"
+                    : "bg-slate-100 text-slate-600"
+                }`}
+              >
+                {documentLink.trim() !== "" ? "Linked" : "Not linked yet"}
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-5">
+              <label className="text-sm font-medium text-slate-700">
+                Google Docs Link
+              </label>
+
+              <input
+                type="url"
+                placeholder="Paste your TTU Google Docs link here..."
+                value={documentLink}
+                onChange={(event) => {
+                  setDocumentLink(event.target.value);
+                  setProfileMessage("");
+                }}
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+              />
+
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                <AppButton variant="primary" size="lg" onClick={saveTtuProfile}>
+                  Save Link
+                </AppButton>
+
+                <AppButton
+                  variant="secondary"
+                  size="lg"
+                  onClick={openDocument}
+                  disabled={documentLink.trim() === ""}
+                >
+                  Open Document
+                </AppButton>
               </div>
             </div>
           </div>
 
-          {/* TOP CONTROL GRID */}
-          <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
-            {/* MAIN DOCUMENT LINK */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm xl:col-span-2">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                    Main Document
-                  </p>
+          {/* STATUS + NEXT ACTION */}
+          <div className="rounded-3xl bg-white p-6 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+              Current Focus
+            </p>
 
-                  <h2 className="mt-2 text-xl font-bold text-slate-800">
-                    TTU Google Docs
-                  </h2>
+            <h2 className="mt-2 text-xl font-bold text-slate-800">
+              Status & Next Action
+            </h2>
 
-                  <p className="mt-1 text-sm text-slate-500">
-                    Save your main TTU / Skripsi document link here so it is
-                    easy to access.
-                  </p>
-                </div>
-
-                <div
-                  className={`rounded-xl px-3 py-2 text-xs font-semibold ${
-                    documentLink.trim() !== ""
-                      ? "bg-green-100 text-green-700"
-                      : "bg-slate-100 text-slate-600"
-                  }`}
-                >
-                  {documentLink.trim() !== "" ? "Linked" : "Not linked yet"}
-                </div>
-              </div>
-
-              <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-5">
+            <div className="mt-5 flex flex-col gap-4">
+              <div>
                 <label className="text-sm font-medium text-slate-700">
-                  Google Docs Link
+                  TTU Status
                 </label>
 
-                <input
-                  type="url"
-                  placeholder="Paste your TTU Google Docs link here..."
-                  value={documentLink}
+                <select
+                  value={status}
                   onChange={(event) => {
-                    setDocumentLink(event.target.value);
+                    setStatus(event.target.value as TtuProfile["status"]);
                     setProfileMessage("");
                   }}
                   className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                >
+                  <option value="Planning">Planning</option>
+                  <option value="Drafting">Drafting</option>
+                  <option value="Revision">Revision</option>
+                  <option value="Ready for Review">Ready for Review</option>
+                  <option value="Submitted">Submitted</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-slate-700">
+                  Next Action
+                </label>
+
+                <textarea
+                  placeholder="Example: Revisi rumusan masalah dan kirim ke dosen pembimbing..."
+                  value={nextAction}
+                  onChange={(event) => {
+                    setNextAction(event.target.value);
+                    setProfileMessage("");
+                  }}
+                  className="mt-2 min-h-28 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
                 />
+              </div>
 
-                <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-                  <AppButton
-                    variant="primary"
-                    size="lg"
-                    onClick={saveTtuProfile}
-                  >
-                    Save Link
-                  </AppButton>
+              <AppButton variant="primary" size="lg" onClick={saveTtuProfile}>
+                Save Status
+              </AppButton>
 
-                  <AppButton
-                    variant="secondary"
-                    size="lg"
-                    onClick={openDocument}
-                    disabled={documentLink.trim() === ""}
-                  >
-                    Open Document
-                  </AppButton>
-                </div>
+              {profileMessage && (
+                <p
+                  className={`rounded-xl px-4 py-3 text-sm font-medium ${
+                    profileMessage.includes("saved")
+                      ? "bg-green-50 text-green-700"
+                      : "bg-red-50 text-red-600"
+                  }`}
+                >
+                  {profileMessage}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* MIDDLE GRID */}
+        <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
+          {/* CHAPTER PROGRESS */}
+          <div className="rounded-3xl bg-white p-6 shadow-sm xl:col-span-2">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                  Chapter Progress
+                </p>
+
+                <h2 className="mt-2 text-xl font-bold text-slate-800">
+                  Skripsi Chapters
+                </h2>
+
+                <p className="mt-1 text-sm text-slate-500">
+                  Track the status of each chapter from planning to done.
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-green-100 px-3 py-2 text-xs font-bold text-green-700">
+                {doneChapters}/{chapters.length} Done
               </div>
             </div>
 
-            {/* STATUS + NEXT ACTION */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm">
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                Current Focus
-              </p>
+            <div className="mt-6 flex flex-col gap-3">
+              {chapters.map((chapter) => (
+                <div
+                  key={chapter.id}
+                  className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div>
+                    <h3 className="font-semibold text-slate-800">
+                      {chapter.title}
+                    </h3>
 
-              <h2 className="mt-2 text-xl font-bold text-slate-800">
-                Status & Next Action
-              </h2>
-
-              <div className="mt-5 flex flex-col gap-4">
-                <div>
-                  <label className="text-sm font-medium text-slate-700">
-                    TTU Status
-                  </label>
+                    <p className="mt-1 text-xs text-slate-500">
+                      Update this chapter status as your writing progresses.
+                    </p>
+                  </div>
 
                   <select
-                    value={status}
-                    onChange={(event) => {
-                      setStatus(event.target.value as TtuProfile["status"]);
-                      setProfileMessage("");
-                    }}
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                    value={chapter.status}
+                    onChange={(event) =>
+                      updateChapterStatus(
+                        chapter.id,
+                        event.target.value as TtuChapter["status"],
+                      )
+                    }
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 sm:w-44"
                   >
-                    <option value="Planning">Planning</option>
+                    <option value="Not Started">Not Started</option>
                     <option value="Drafting">Drafting</option>
+                    <option value="Review">Review</option>
                     <option value="Revision">Revision</option>
-                    <option value="Ready for Review">Ready for Review</option>
-                    <option value="Submitted">Submitted</option>
+                    <option value="Done">Done</option>
                   </select>
                 </div>
-
-                <div>
-                  <label className="text-sm font-medium text-slate-700">
-                    Next Action
-                  </label>
-
-                  <textarea
-                    placeholder="Example: Revisi rumusan masalah dan kirim ke dosen pembimbing..."
-                    value={nextAction}
-                    onChange={(event) => {
-                      setNextAction(event.target.value);
-                      setProfileMessage("");
-                    }}
-                    className="mt-2 min-h-28 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
-                  />
-                </div>
-
-                <AppButton variant="primary" size="lg" onClick={saveTtuProfile}>
-                  Save Status
-                </AppButton>
-
-                {profileMessage && (
-                  <p
-                    className={`rounded-xl px-4 py-3 text-sm font-medium ${
-                      profileMessage.includes("saved")
-                        ? "bg-green-50 text-green-700"
-                        : "bg-red-50 text-red-600"
-                    }`}
-                  >
-                    {profileMessage}
-                  </p>
-                )}
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* MIDDLE GRID */}
-          <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
-            {/* CHAPTER PROGRESS */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm xl:col-span-2">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                    Chapter Progress
-                  </p>
+          {/* IMPORTANT DEADLINES */}
+          <div className="rounded-3xl bg-white p-6 shadow-sm">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                  Important Dates
+                </p>
 
-                  <h2 className="mt-2 text-xl font-bold text-slate-800">
-                    Skripsi Chapters
-                  </h2>
+                <h2 className="mt-2 text-xl font-bold text-slate-800">
+                  TTU Deadlines
+                </h2>
 
-                  <p className="mt-1 text-sm text-slate-500">
-                    Track the status of each chapter from planning to done.
-                  </p>
-                </div>
-
-                <div className="rounded-xl bg-green-100 px-3 py-2 text-xs font-bold text-green-700">
-                  {doneChapters}/{chapters.length} Done
-                </div>
+                <p className="mt-1 text-sm text-slate-500">
+                  Keep your critical academic dates visible.
+                </p>
               </div>
 
-              <div className="mt-6 flex flex-col gap-3">
-                {chapters.map((chapter) => (
-                  <div
-                    key={chapter.id}
-                    className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <div>
-                      <h3 className="font-semibold text-slate-800">
-                        {chapter.title}
-                      </h3>
-
-                      <p className="mt-1 text-xs text-slate-500">
-                        Update this chapter status as your writing progresses.
-                      </p>
-                    </div>
-
-                    <select
-                      value={chapter.status}
-                      onChange={(event) =>
-                        updateChapterStatus(
-                          chapter.id,
-                          event.target.value as TtuChapter["status"],
-                        )
-                      }
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 sm:w-44"
-                    >
-                      <option value="Not Started">Not Started</option>
-                      <option value="Drafting">Drafting</option>
-                      <option value="Review">Review</option>
-                      <option value="Revision">Revision</option>
-                      <option value="Done">Done</option>
-                    </select>
-                  </div>
-                ))}
+              <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
+                {deadlines.length}
               </div>
             </div>
 
-            {/* IMPORTANT DEADLINES */}
-            {/* IMPORTANT DEADLINES */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                    Important Dates
-                  </p>
+            {/* ADD DEADLINE FORM */}
+            <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-5">
+              <div>
+                <label className="text-sm font-medium text-slate-700">
+                  Deadline Title
+                </label>
 
-                  <h2 className="mt-2 text-xl font-bold text-slate-800">
-                    TTU Deadlines
-                  </h2>
-
-                  <p className="mt-1 text-sm text-slate-500">
-                    Keep your critical academic dates visible.
-                  </p>
-                </div>
-
-                <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
-                  {deadlines.length}
-                </div>
+                <input
+                  type="text"
+                  placeholder="Example: Submit Bab 1-3"
+                  value={deadlineTitle}
+                  onChange={(event) => {
+                    setDeadlineTitle(event.target.value);
+                    setDeadlineError("");
+                  }}
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                />
               </div>
 
-              {/* ADD DEADLINE FORM */}
-              <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-5">
+              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-1">
                 <div>
                   <label className="text-sm font-medium text-slate-700">
-                    Deadline Title
+                    Date
                   </label>
 
                   <input
-                    type="text"
-                    placeholder="Example: Submit Bab 1-3"
-                    value={deadlineTitle}
+                    type="date"
+                    value={deadlineDate}
                     onChange={(event) => {
-                      setDeadlineTitle(event.target.value);
+                      setDeadlineDate(event.target.value);
                       setDeadlineError("");
                     }}
                     className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
                   />
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-1">
-                  <div>
-                    <label className="text-sm font-medium text-slate-700">
-                      Date
-                    </label>
+                <div>
+                  <label className="text-sm font-medium text-slate-700">
+                    Type
+                  </label>
 
-                    <input
-                      type="date"
-                      value={deadlineDate}
-                      onChange={(event) => {
-                        setDeadlineDate(event.target.value);
-                        setDeadlineError("");
-                      }}
-                      className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-slate-700">
-                      Type
-                    </label>
-
-                    <select
-                      value={deadlineType}
-                      onChange={(event) => {
-                        setDeadlineType(
-                          event.target.value as TtuDeadline["type"],
-                        );
-                        setDeadlineError("");
-                      }}
-                      className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
-                    >
-                      <option value="Guidance">Guidance</option>
-                      <option value="Submission">Submission</option>
-                      <option value="Seminar">Seminar</option>
-                      <option value="Defense">Defense</option>
-                      <option value="Revision">Revision</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <AppButton
-                    variant="primary"
-                    size="lg"
-                    className="w-full"
-                    onClick={addDeadline}
+                  <select
+                    value={deadlineType}
+                    onChange={(event) => {
+                      setDeadlineType(
+                        event.target.value as TtuDeadline["type"],
+                      );
+                      setDeadlineError("");
+                    }}
+                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
                   >
-                    + Add Deadline
-                  </AppButton>
+                    <option value="Guidance">Guidance</option>
+                    <option value="Submission">Submission</option>
+                    <option value="Seminar">Seminar</option>
+                    <option value="Defense">Defense</option>
+                    <option value="Revision">Revision</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
-
-                {deadlineError && (
-                  <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
-                    {deadlineError}
-                  </p>
-                )}
-              </div>
-
-              {/* DEADLINE LIST */}
-              {deadlines.length === 0 && (
-                <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
-                  <p className="text-sm font-semibold text-slate-700">
-                    No deadline yet.
-                  </p>
-
-                  <p className="mt-1 text-xs text-slate-500">
-                    Add seminar, submission, guidance, or revision dates.
-                  </p>
-                </div>
-              )}
-
-              {deadlines.length > 0 && (
-                <div className="mt-6 flex flex-col gap-3">
-                  {deadlines.map((deadline) => (
-                    <div
-                      key={deadline.id}
-                      className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                    >
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                        <div>
-                          <h3 className="font-semibold text-slate-800">
-                            {deadline.title}
-                          </h3>
-
-                          <div className="mt-2 flex flex-wrap items-center gap-2">
-                            <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">
-                              {deadline.date}
-                            </span>
-
-                            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
-                              {deadline.type}
-                            </span>
-                          </div>
-                        </div>
-
-                        <AppButton
-                          variant="danger"
-                          size="icon"
-                          onClick={() => setDeadlineToDelete(deadline)}
-                        >
-                          🗑
-                        </AppButton>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* LOWER GRID */}
-          <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
-            {/* REVISION CHECKLIST */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                    Revision Checklist
-                  </p>
-
-                  <h2 className="mt-2 text-xl font-bold text-slate-800">
-                    Action Items
-                  </h2>
-
-                  <p className="mt-1 text-sm text-slate-500">
-                    Turn guidance feedback into clear revision tasks.
-                  </p>
-                </div>
-
-                <div className="rounded-xl bg-orange-100 px-3 py-2 text-xs font-bold text-orange-700">
-                  {pendingRevisions} Pending
-                </div>
-              </div>
-
-              {revisions.length === 0 && (
-                <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
-                  <p className="text-sm font-semibold text-slate-700">
-                    No revision tasks yet.
-                  </p>
-
-                  <p className="mt-1 text-xs text-slate-500">
-                    Add tasks like “perbaiki latar belakang” or “tambahkan
-                    jurnal”.
-                  </p>
-                </div>
-              )}
-
-              {revisions.length > 0 && (
-                <div className="mt-6 flex flex-col gap-3">
-                  {revisions.map((revision) => (
-                    <div
-                      key={revision.id}
-                      className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <label className="flex cursor-pointer items-start gap-3">
-                        <input
-                          type="checkbox"
-                          checked={revision.completed}
-                          onChange={() => toggleRevision(revision.id)}
-                          className="mt-1 h-4 w-4 accent-blue-600"
-                        />
-
-                        <span
-                          className={`text-sm font-medium ${
-                            revision.completed
-                              ? "text-slate-400 line-through"
-                              : "text-slate-700"
-                          }`}
-                        >
-                          {revision.text}
-                        </span>
-                      </label>
-
-                      <AppButton
-                        variant="danger"
-                        size="icon"
-                        onClick={() => setRevisionToDelete(revision)}
-                      >
-                        🗑
-                      </AppButton>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-                <input
-                  type="text"
-                  placeholder="Add revision task..."
-                  value={revisionText}
-                  onChange={(event) => {
-                    setRevisionText(event.target.value);
-                    setRevisionError("");
-                  }}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
-                />
-
-                <AppButton variant="primary" size="lg" onClick={addRevision}>
-                  Add
-                </AppButton>
-              </div>
-
-              {revisionError && (
-                <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
-                  {revisionError}
-                </p>
-              )}
-            </div>
-
-            {/* GUIDANCE NOTES */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                    Guidance Notes
-                  </p>
-
-                  <h2 className="mt-2 text-xl font-bold text-slate-800">
-                    Bimbingan Log
-                  </h2>
-
-                  <p className="mt-1 text-sm text-slate-500">
-                    Record feedback and notes from your thesis advisor.
-                  </p>
-                </div>
-
-                <div className="rounded-xl bg-purple-100 px-3 py-2 text-xs font-bold text-purple-700">
-                  {guidanceNotes.length} Notes
-                </div>
-              </div>
-
-              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="text-sm font-medium text-slate-700">
-                    Guidance Date
-                  </label>
-
-                  <input
-                    type="date"
-                    value={guidanceDate}
-                    onChange={(event) => {
-                      setGuidanceDate(event.target.value);
-                      setGuidanceError("");
-                    }}
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-slate-700">
-                    Lecturer
-                  </label>
-
-                  <input
-                    type="text"
-                    placeholder="Advisor name..."
-                    value={lecturer}
-                    onChange={(event) => {
-                      setLecturer(event.target.value);
-                      setGuidanceError("");
-                    }}
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label className="text-sm font-medium text-slate-700">
-                  Notes
-                </label>
-
-                <textarea
-                  placeholder="Write guidance notes or feedback..."
-                  value={guidanceNoteText}
-                  onChange={(event) => {
-                    setGuidanceNoteText(event.target.value);
-                    setGuidanceError("");
-                  }}
-                  className="mt-2 min-h-28 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
-                />
               </div>
 
               <div className="mt-4">
@@ -960,70 +712,312 @@ export default function TtuPage() {
                   variant="primary"
                   size="lg"
                   className="w-full"
-                  onClick={addGuidanceNote}
+                  onClick={addDeadline}
                 >
-                  Save Guidance Note
+                  + Add Deadline
                 </AppButton>
-
-                {guidanceError && (
-                  <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
-                    {guidanceError}
-                  </p>
-                )}
               </div>
 
-              {guidanceNotes.length === 0 && (
-                <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
-                  <p className="text-sm font-semibold text-slate-700">
-                    No guidance notes yet.
-                  </p>
-
-                  <p className="mt-1 text-xs text-slate-500">
-                    Save feedback from your advisor after each guidance session.
-                  </p>
-                </div>
-              )}
-
-              {guidanceNotes.length > 0 && (
-                <div className="mt-6 flex flex-col gap-3">
-                  {guidanceNotes.map((guidanceNote) => (
-                    <div
-                      key={guidanceNote.id}
-                      className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                    >
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                        <div>
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-700">
-                              {guidanceNote.date}
-                            </span>
-
-                            <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">
-                              {guidanceNote.lecturer}
-                            </span>
-                          </div>
-
-                          <p className="mt-3 whitespace-pre-line text-sm text-slate-700">
-                            {guidanceNote.note}
-                          </p>
-                        </div>
-
-                        <AppButton
-                          variant="danger"
-                          size="icon"
-                          onClick={() => setGuidanceToDelete(guidanceNote)}
-                        >
-                          🗑
-                        </AppButton>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              {deadlineError && (
+                <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                  {deadlineError}
+                </p>
               )}
             </div>
+
+            {/* DEADLINE LIST */}
+            {deadlines.length === 0 && (
+              <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
+                <p className="text-sm font-semibold text-slate-700">
+                  No deadline yet.
+                </p>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  Add seminar, submission, guidance, or revision dates.
+                </p>
+              </div>
+            )}
+
+            {deadlines.length > 0 && (
+              <div className="mt-6 flex flex-col gap-3">
+                {deadlines.map((deadline) => (
+                  <div
+                    key={deadline.id}
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <h3 className="font-semibold text-slate-800">
+                          {deadline.title}
+                        </h3>
+
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
+                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+                            {deadline.date}
+                          </span>
+
+                          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
+                            {deadline.type}
+                          </span>
+                        </div>
+                      </div>
+
+                      <AppButton
+                        variant="danger"
+                        size="icon"
+                        onClick={() => setDeadlineToDelete(deadline)}
+                      >
+                        🗑
+                      </AppButton>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        </section>
-      </div>
+        </div>
+
+        {/* LOWER GRID */}
+        <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
+          {/* REVISION CHECKLIST */}
+          <div className="rounded-3xl bg-white p-6 shadow-sm">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                  Revision Checklist
+                </p>
+
+                <h2 className="mt-2 text-xl font-bold text-slate-800">
+                  Action Items
+                </h2>
+
+                <p className="mt-1 text-sm text-slate-500">
+                  Turn guidance feedback into clear revision tasks.
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-orange-100 px-3 py-2 text-xs font-bold text-orange-700">
+                {pendingRevisions} Pending
+              </div>
+            </div>
+
+            {revisions.length === 0 && (
+              <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
+                <p className="text-sm font-semibold text-slate-700">
+                  No revision tasks yet.
+                </p>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  Add tasks like “perbaiki latar belakang” or “tambahkan
+                  jurnal”.
+                </p>
+              </div>
+            )}
+
+            {revisions.length > 0 && (
+              <div className="mt-6 flex flex-col gap-3">
+                {revisions.map((revision) => (
+                  <div
+                    key={revision.id}
+                    className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <label className="flex cursor-pointer items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={revision.completed}
+                        onChange={() => toggleRevision(revision.id)}
+                        className="mt-1 h-4 w-4 accent-blue-600"
+                      />
+
+                      <span
+                        className={`text-sm font-medium ${
+                          revision.completed
+                            ? "text-slate-400 line-through"
+                            : "text-slate-700"
+                        }`}
+                      >
+                        {revision.text}
+                      </span>
+                    </label>
+
+                    <AppButton
+                      variant="danger"
+                      size="icon"
+                      onClick={() => setRevisionToDelete(revision)}
+                    >
+                      🗑
+                    </AppButton>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <input
+                type="text"
+                placeholder="Add revision task..."
+                value={revisionText}
+                onChange={(event) => {
+                  setRevisionText(event.target.value);
+                  setRevisionError("");
+                }}
+                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+              />
+
+              <AppButton variant="primary" size="lg" onClick={addRevision}>
+                Add
+              </AppButton>
+            </div>
+
+            {revisionError && (
+              <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                {revisionError}
+              </p>
+            )}
+          </div>
+
+          {/* GUIDANCE NOTES */}
+          <div className="rounded-3xl bg-white p-6 shadow-sm">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                  Guidance Notes
+                </p>
+
+                <h2 className="mt-2 text-xl font-bold text-slate-800">
+                  Bimbingan Log
+                </h2>
+
+                <p className="mt-1 text-sm text-slate-500">
+                  Record feedback and notes from your thesis advisor.
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-purple-100 px-3 py-2 text-xs font-bold text-purple-700">
+                {guidanceNotes.length} Notes
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div>
+                <label className="text-sm font-medium text-slate-700">
+                  Guidance Date
+                </label>
+
+                <input
+                  type="date"
+                  value={guidanceDate}
+                  onChange={(event) => {
+                    setGuidanceDate(event.target.value);
+                    setGuidanceError("");
+                  }}
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-slate-700">
+                  Lecturer
+                </label>
+
+                <input
+                  type="text"
+                  placeholder="Advisor name..."
+                  value={lecturer}
+                  onChange={(event) => {
+                    setLecturer(event.target.value);
+                    setGuidanceError("");
+                  }}
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label className="text-sm font-medium text-slate-700">
+                Notes
+              </label>
+
+              <textarea
+                placeholder="Write guidance notes or feedback..."
+                value={guidanceNoteText}
+                onChange={(event) => {
+                  setGuidanceNoteText(event.target.value);
+                  setGuidanceError("");
+                }}
+                className="mt-2 min-h-28 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+              />
+            </div>
+
+            <div className="mt-4">
+              <AppButton
+                variant="primary"
+                size="lg"
+                className="w-full"
+                onClick={addGuidanceNote}
+              >
+                Save Guidance Note
+              </AppButton>
+
+              {guidanceError && (
+                <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                  {guidanceError}
+                </p>
+              )}
+            </div>
+
+            {guidanceNotes.length === 0 && (
+              <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
+                <p className="text-sm font-semibold text-slate-700">
+                  No guidance notes yet.
+                </p>
+
+                <p className="mt-1 text-xs text-slate-500">
+                  Save feedback from your advisor after each guidance session.
+                </p>
+              </div>
+            )}
+
+            {guidanceNotes.length > 0 && (
+              <div className="mt-6 flex flex-col gap-3">
+                {guidanceNotes.map((guidanceNote) => (
+                  <div
+                    key={guidanceNote.id}
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-700">
+                            {guidanceNote.date}
+                          </span>
+
+                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+                            {guidanceNote.lecturer}
+                          </span>
+                        </div>
+
+                        <p className="mt-3 whitespace-pre-line text-sm text-slate-700">
+                          {guidanceNote.note}
+                        </p>
+                      </div>
+
+                      <AppButton
+                        variant="danger"
+                        size="icon"
+                        onClick={() => setGuidanceToDelete(guidanceNote)}
+                      >
+                        🗑
+                      </AppButton>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
       <ConfirmDeleteModal
         isOpen={!!revisionToDelete}
         title="Delete Revision Task?"
@@ -1033,6 +1027,20 @@ export default function TtuPage() {
         onConfirm={() => {
           if (revisionToDelete) {
             deleteRevision(revisionToDelete.id);
+          }
+        }}
+      />
+
+      <ConfirmDeleteModal
+        isOpen={!!guidanceToDelete}
+        title="Delete Guidance Note?"
+        description="This action will permanently remove this guidance note."
+        itemName={guidanceToDelete?.lecturer}
+        itemDetail={guidanceToDelete?.date}
+        onCancel={() => setGuidanceToDelete(null)}
+        onConfirm={() => {
+          if (guidanceToDelete) {
+            deleteGuidanceNote(guidanceToDelete.id);
           }
         }}
       />

@@ -297,148 +297,146 @@ export default function MagangPage() {
   });
 
   return (
-    <main className="min-h-screen bg-slate-100">
-      <div className="flex flex-col lg:flex-row">
-        <Sidebar />
+    <main className="gf-page">
+      <Sidebar />
 
-        <section className="flex-1 p-3 sm:p-4 lg:p-5">
-          {/* PAGE HEADER */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
-            <h1 className="text-3xl font-bold text-slate-800">
-              Internship Tracker
-            </h1>
+      <section className="min-h-screen p-3 pt-20 sm:p-4 sm:pt-20 lg:ml-72 lg:p-5">
+        {/* PAGE HEADER */}
+        <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <h1 className="text-3xl font-bold text-slate-800">
+            Internship Tracker
+          </h1>
 
-            <p className="mt-2 text-slate-500">
-              Track your internship applications, status, and deadlines.
-            </p>
+          <p className="mt-2 text-slate-500">
+            Track your internship applications, status, and deadlines.
+          </p>
 
-            {/* ACTION BAR */}
-            <div className="mt-6 flex flex-col gap-4 rounded-3xl bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-slate-800">
-                  Application Manager
-                </h2>
+          {/* ACTION BAR */}
+          <div className="mt-6 flex flex-col gap-4 rounded-3xl bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-800">
+                Application Manager
+              </h2>
 
-                <p className="text-sm text-slate-500">
-                  Manage all companies you want to apply to.
-                </p>
+              <p className="text-sm text-slate-500">
+                Manage all companies you want to apply to.
+              </p>
+            </div>
+
+            <AppButton variant="primary" size="lg" onClick={openAddModal}>
+              + Add Application
+            </AppButton>
+          </div>
+        </div>
+
+        {/* APPLICATION LIST */}
+        <div className="mt-4 rounded-3xl bg-white p-6 shadow-sm">
+          {/* LIST HEADER */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-800">
+                Internship Applications
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Your application list will appear here.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <select
+                value={selectedStatus}
+                onChange={(event) => setSelectedStatus(event.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-blue-500 sm:w-auto"
+              >
+                <option value="All">All</option>
+                <option value="Wishlist">Wishlist</option>
+                <option value="Applied">Applied</option>
+                <option value="Interview">Interview</option>
+                <option value="Accepted">Accepted</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+
+              <div className="w-full rounded-xl bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600 sm:w-auto">
+                {filteredInternships.length} Applications
               </div>
-
-              <AppButton variant="primary" size="lg" onClick={openAddModal}>
-                + Add Application
-              </AppButton>
             </div>
           </div>
 
-          {/* APPLICATION LIST */}
-          <div className="mt-4 rounded-3xl bg-white p-6 shadow-sm">
-            {/* LIST HEADER */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-slate-800">
-                  Internship Applications
-                </h2>
-
-                <p className="mt-1 text-sm text-slate-500">
-                  Your application list will appear here.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <select
-                  value={selectedStatus}
-                  onChange={(event) => setSelectedStatus(event.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-blue-500 sm:w-auto"
-                >
-                  <option value="All">All</option>
-                  <option value="Wishlist">Wishlist</option>
-                  <option value="Applied">Applied</option>
-                  <option value="Interview">Interview</option>
-                  <option value="Accepted">Accepted</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-
-                <div className="w-full rounded-xl bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600 sm:w-auto">
-                  {filteredInternships.length} Applications
-                </div>
-              </div>
+          {/* EMPTY STATE */}
+          {filteredInternships.length === 0 && (
+            <div className="mt-6">
+              <EmptyState
+                title="No internship applications found."
+                description="Add your first application to start tracking opportunities."
+              />
             </div>
+          )}
 
-            {/* EMPTY STATE */}
-            {filteredInternships.length === 0 && (
-              <div className="mt-6">
-                <EmptyState
-                  title="No internship applications found."
-                  description="Add your first application to start tracking opportunities."
-                />
-              </div>
-            )}
+          {/* APPLICATION ITEMS */}
+          <div className="mt-6 grid gap-3">
+            {sortedInternships.map((internship) => (
+              <div
+                key={internship.id}
+                className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 transition hover:shadow-md sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div>
+                  <h3 className="font-semibold text-slate-800">
+                    {internship.company}
+                  </h3>
 
-            {/* APPLICATION ITEMS */}
-            <div className="mt-6 grid gap-3">
-              {sortedInternships.map((internship) => (
-                <div
-                  key={internship.id}
-                  className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 transition hover:shadow-md sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div>
-                    <h3 className="font-semibold text-slate-800">
-                      {internship.company}
-                    </h3>
+                  <p className="mt-1 text-sm text-slate-500">
+                    {internship.role}
+                  </p>
 
-                    <p className="mt-1 text-sm text-slate-500">
-                      {internship.role}
+                  {internship.deadline && (
+                    <p className="mt-1 text-xs text-slate-400">
+                      Deadline: {internship.deadline}
                     </p>
-
-                    {internship.deadline && (
-                      <p className="mt-1 text-xs text-slate-400">
-                        Deadline: {internship.deadline}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span
-                      className={`rounded-xl px-3 py-2 text-xs font-semibold ${getStatusColor(
-                        internship.status,
-                      )}`}
-                    >
-                      {internship.status}
-                    </span>
-
-                    {internship.link && (
-                      <a
-                        href={internship.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-200"
-                      >
-                        Open Link
-                      </a>
-                    )}
-
-                    <AppButton
-                      variant="warning"
-                      size="icon"
-                      onClick={() => openEditModal(internship)}
-                    >
-                      ✏️
-                    </AppButton>
-
-                    <AppButton
-                      variant="danger"
-                      size="icon"
-                      onClick={() => setInternshipToDelete(internship)}
-                    >
-                      🗑
-                    </AppButton>
-                  </div>
+                  )}
                 </div>
-              ))}
-            </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className={`rounded-xl px-3 py-2 text-xs font-semibold ${getStatusColor(
+                      internship.status,
+                    )}`}
+                  >
+                    {internship.status}
+                  </span>
+
+                  {internship.link && (
+                    <a
+                      href={internship.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-200"
+                    >
+                      Open Link
+                    </a>
+                  )}
+
+                  <AppButton
+                    variant="warning"
+                    size="icon"
+                    onClick={() => openEditModal(internship)}
+                  >
+                    ✏️
+                  </AppButton>
+
+                  <AppButton
+                    variant="danger"
+                    size="icon"
+                    onClick={() => setInternshipToDelete(internship)}
+                  >
+                    🗑
+                  </AppButton>
+                </div>
+              </div>
+            ))}
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
       {/* ADD / EDIT APPLICATION MODAL */}
       {isModalOpen && (

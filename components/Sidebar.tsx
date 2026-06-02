@@ -1,166 +1,219 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import ThemeToggle from "@/components/ThemeToggle";
+
+type NavItem = {
+  label: string;
+  href: string;
+  icon: string;
+};
+
+const generalNavItems: NavItem[] = [
+  {
+    label: "Dashboard",
+    href: "/",
+    icon: "□",
+  },
+  {
+    label: "TTU / Skripsi",
+    href: "/ttu",
+    icon: "✎",
+  },
+  {
+    label: "Magang",
+    href: "/magang",
+    icon: "◇",
+  },
+  {
+    label: "Calendar",
+    href: "/calendar",
+    icon: "▣",
+  },
+  {
+    label: "Daily Log",
+    href: "/daily-log",
+    icon: "✦",
+  },
+];
+
+const personalNavItems: NavItem[] = [
+  {
+    label: "Goals",
+    href: "/goals",
+    icon: "◎",
+  },
+  {
+    label: "Assets",
+    href: "/assets",
+    icon: "⌘",
+  },
+];
 
 export default function Sidebar() {
-  // isOpen dipakai untuk membuka/menutup sidebar versi mobile.
-  const [isOpen, setIsOpen] = useState(false);
-
-  // pathname dipakai untuk mengetahui halaman aktif.
-  // Contoh: kalau sedang di /calendar, menu Calendar akan diberi warna aktif.
   const pathname = usePathname();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Daftar menu sidebar.
-  // Setiap item punya name untuk label dan path untuk route tujuan.
-  const menuItems = [
-    {
-      name: "Dashboard",
-      path: "/",
-    },
-    {
-      name: "TTU / Skripsi",
-      path: "/ttu",
-    },
-    {
-      name: "Magang",
-      path: "/magang",
-    },
-    {
-      name: "Calendar",
-      path: "/calendar",
-    },
-    {
-      name: "Daily Log",
-      path: "/daily-log",
-    },
-    {
-      name: "Goals",
-      path: "/goals",
-    },
-    {
-      name: "Assets",
-      path: "/assets",
-    },
-  ];
+  const isActivePath = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return pathname.startsWith(href);
+  };
+
+  const closeMobileSidebar = () => {
+    setIsMobileOpen(false);
+  };
+
+  const renderNavItem = (item: NavItem) => {
+    const isActive = isActivePath(item.href);
+
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        onClick={closeMobileSidebar}
+        className={`group relative flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition ${
+          isActive
+            ? "bg-[var(--gf-sidebar-active)] text-[var(--gf-ink-on-dark)]"
+            : "text-[var(--gf-muted-on-dark)] hover:bg-white/5 hover:text-[var(--gf-ink-on-dark)]"
+        }`}
+      >
+        {isActive && (
+          <span className="absolute left-0 h-6 w-1 rounded-r-full bg-[var(--gf-primary)]" />
+        )}
+
+        <span
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border text-sm ${
+            isActive
+              ? "border-[var(--gf-primary)] bg-[var(--gf-primary-soft)] text-[var(--gf-primary)]"
+              : "border-white/10 bg-white/5 text-[var(--gf-muted-on-dark)] group-hover:text-[var(--gf-ink-on-dark)]"
+          }`}
+        >
+          {item.icon}
+        </span>
+
+        <span>{item.label}</span>
+      </Link>
+    );
+  };
 
   return (
     <>
-      {/* ===============================
-          MOBILE NAVBAR
-          =============================== */}
-      <div className="flex items-center justify-between bg-slate-950 px-4 py-4 text-white lg:hidden">
-        {/* LOGO */}
-        <div>
-          <h1 className="text-2xl font-bold text-blue-500">GradFlow</h1>
+      {/* MOBILE MENU BUTTON */}
+      <button
+        type="button"
+        onClick={() => setIsMobileOpen(true)}
+        className="fixed left-4 top-4 z-40 flex h-11 w-11 items-center justify-center rounded-2xl border border-[var(--gf-border)] bg-[var(--gf-card)] text-[var(--gf-ink)] shadow-lg lg:hidden"
+        aria-label="Open sidebar"
+      >
+        ☰
+      </button>
 
-          <p className="text-xs text-slate-400">Productivity Dashboard</p>
-        </div>
-
-        {/* HAMBURGER BUTTON */}
+      {/* MOBILE OVERLAY */}
+      {isMobileOpen && (
         <button
-          onClick={() => setIsOpen(true)}
-          className="rounded-xl bg-slate-800 px-4 py-2 text-xl transition hover:bg-slate-700"
-        >
-          ☰
-        </button>
-      </div>
+          type="button"
+          onClick={closeMobileSidebar}
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
+          aria-label="Close sidebar overlay"
+        />
+      )}
 
-      {/* ===============================
-          MOBILE SIDEBAR OVERLAY
-          =============================== */}
-      <div
-        className={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
-          isOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+      {/* SIDEBAR */}
+      <aside
+        className={`fixed left-0 top-0 z-50 flex h-screen w-72 flex-col overflow-y-auto border-r border-white/10 bg-[var(--gf-sidebar)] px-4 py-5 text-[var(--gf-ink-on-dark)] shadow-2xl transition-transform duration-300 lg:translate-x-0 ${
+          isMobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* CLICK OUTSIDE TO CLOSE */}
-        <div className="absolute inset-0" onClick={() => setIsOpen(false)} />
-
-        {/* MOBILE SIDEBAR PANEL */}
-        <aside
-          className={`relative h-full w-72 transform bg-slate-950 p-6 text-white transition-all duration-500 ease-in-out ${
-            isOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
-        >
-          {/* TOP */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-blue-500">GradFlow</h1>
-
-              <p className="mt-1 text-sm text-slate-400">
-                Productivity Dashboard
-              </p>
+        {/* TOP LOGO */}
+        <div className="flex items-center justify-between">
+          <Link
+            href="/"
+            onClick={closeMobileSidebar}
+            className="flex items-center gap-3"
+          >
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-lg font-bold">
+              G
             </div>
 
-            {/* CLOSE BUTTON */}
-            <button
-              onClick={() => setIsOpen(false)}
-              className="rounded-lg bg-slate-800 px-3 py-2 text-lg transition hover:bg-slate-700"
-            >
-              ✕
-            </button>
-          </div>
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight">
+                GradFlow
+              </h1>
 
-          {/* NAVIGATION */}
-          <nav className="mt-10 flex flex-col gap-4">
-            {menuItems.map((item) => (
-              <Link
-                href={item.path}
-                key={item.name}
-                onClick={() => setIsOpen(false)}
-                className={`rounded-2xl px-4 py-4 text-left font-medium transition-all duration-200 hover:scale-[1.02] ${
-                  pathname === item.path
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                    : "text-slate-300 hover:bg-slate-800"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-        </aside>
-      </div>
+              <p className="mt-0.5 text-xs text-[var(--gf-muted-on-dark)]">
+                Academic workspace
+              </p>
+            </div>
+          </Link>
 
-      {/* ===============================
-          DESKTOP SIDEBAR
-          =============================== */}
-      <aside className="hidden h-screen w-72 shrink-0 bg-slate-950 p-6 text-white lg:sticky lg:top-0 lg:flex lg:flex-col">
-        {/* LOGO */}
-        <div>
-          <h1 className="text-4xl font-bold text-blue-500">GradFlow</h1>
-
-          <p className="mt-2 text-sm text-slate-400">
-            Academic & Career Dashboard
-          </p>
+          <button
+            type="button"
+            onClick={closeMobileSidebar}
+            className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-sm text-[var(--gf-ink-on-dark)] lg:hidden"
+            aria-label="Close sidebar"
+          >
+            ✕
+          </button>
         </div>
 
         {/* NAVIGATION */}
-        <nav className="mt-10 flex flex-col gap-4">
-          {menuItems.map((item) => (
-            <Link
-              href={item.path}
-              key={item.name}
-              className={`rounded-2xl px-4 py-4 text-left font-medium transition-all duration-200 hover:scale-[1.02] ${
-                pathname === item.path
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                  : "text-slate-300 hover:bg-slate-800"
-              }`}
-            >
-              {item.name}
-            </Link>
-          ))}
+        <nav className="mt-8 flex flex-1 flex-col gap-8">
+          <div>
+            <p className="px-3 text-xs font-semibold uppercase tracking-wide text-[var(--gf-muted-on-dark)]">
+              General
+            </p>
+
+            <div className="mt-3 flex flex-col gap-1.5">
+              {generalNavItems.map(renderNavItem)}
+            </div>
+          </div>
+
+          <div>
+            <p className="px-3 text-xs font-semibold uppercase tracking-wide text-[var(--gf-muted-on-dark)]">
+              Personal
+            </p>
+
+            <div className="mt-3 flex flex-col gap-1.5">
+              {personalNavItems.map(renderNavItem)}
+            </div>
+          </div>
         </nav>
 
-        {/* QUICK NOTE */}
-        <div className="mt-12 rounded-3xl bg-slate-900 p-5 transition hover:bg-slate-800">
-          <h2 className="text-lg font-semibold">Quick Note</h2>
+        {/* FOCUS FLIGHT MINI INFO */}
+        <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--gf-primary-soft)] text-[var(--gf-primary)]">
+              ✈
+            </div>
 
-          <p className="mt-4 text-sm leading-relaxed text-slate-400">
-            Discipline today builds freedom tomorrow.
+            <div>
+              <p className="text-sm font-semibold text-[var(--gf-ink-on-dark)]">
+                Focus Flight
+              </p>
+
+              <p className="mt-1 text-xs leading-relaxed text-[var(--gf-muted-on-dark)]">
+                Keep your study journey steady, one focused session at a time.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* THEME TOGGLE */}
+        <div className="mt-4">
+          <ThemeToggle />
+        </div>
+
+        {/* FOOTER */}
+        <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+          <p className="text-xs text-[var(--gf-muted-on-dark)]">Signed in as</p>
+
+          <p className="mt-1 truncate text-sm font-semibold text-[var(--gf-ink-on-dark)]">
+            Anisa
           </p>
         </div>
       </aside>
