@@ -76,21 +76,21 @@ export default function Sidebar() {
         key={item.href}
         href={item.href}
         onClick={closeMobileSidebar}
-        className={`group relative flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition ${
+        className={`group relative flex min-h-11 items-center gap-3 rounded-2xl px-3 text-sm font-medium transition ${
           isActive
-            ? "bg-[var(--gf-sidebar-active)] text-[var(--gf-ink-on-dark)]"
-            : "text-[var(--gf-muted-on-dark)] hover:bg-white/5 hover:text-[var(--gf-ink-on-dark)]"
+            ? "bg-white/[0.10] text-white shadow-[0_0_0_1px_rgba(255,255,255,0.08)]"
+            : "text-slate-400 hover:bg-white/[0.06] hover:text-white"
         }`}
       >
         {isActive && (
-          <span className="absolute left-0 h-6 w-1 rounded-r-full bg-[var(--gf-primary)]" />
+          <span className="absolute left-0 h-7 w-1 rounded-r-full bg-violet-400 shadow-[0_0_16px_rgba(167,139,250,0.75)]" />
         )}
 
         <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border text-sm ${
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border text-sm transition ${
             isActive
-              ? "border-[var(--gf-primary)] bg-[var(--gf-primary-soft)] text-[var(--gf-primary)]"
-              : "border-white/10 bg-white/5 text-[var(--gf-muted-on-dark)] group-hover:text-[var(--gf-ink-on-dark)]"
+              ? "border-violet-300/50 bg-violet-400 text-slate-950 shadow-[0_0_18px_rgba(167,139,250,0.40)]"
+              : "border-white/10 bg-white/[0.05] text-slate-400 group-hover:border-white/20 group-hover:text-white"
           }`}
         >
           {item.icon}
@@ -118,16 +118,20 @@ export default function Sidebar() {
         <button
           type="button"
           onClick={closeMobileSidebar}
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
           aria-label="Close sidebar overlay"
         />
       )}
 
       {/* SIDEBAR */}
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen w-72 flex-col overflow-y-auto border-r border-white/10 bg-[var(--gf-sidebar)] px-4 py-5 text-[var(--gf-ink-on-dark)] shadow-2xl transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed left-0 top-0 z-50 flex h-screen w-72 flex-col overflow-y-auto border-r border-white/10 px-4 py-5 text-white shadow-2xl transition-transform duration-300 lg:translate-x-0 ${
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
+        style={{
+          background:
+            "radial-gradient(circle at top left, rgba(124, 58, 237, 0.20), transparent 34%), linear-gradient(180deg, #050816 0%, #070817 45%, #03040b 100%)",
+        }}
       >
         {/* TOP LOGO */}
         <div className="flex items-center justify-between">
@@ -136,25 +140,23 @@ export default function Sidebar() {
             onClick={closeMobileSidebar}
             className="flex items-center gap-3"
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-lg font-bold">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.08] text-lg font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
               G
             </div>
 
             <div>
-              <h1 className="text-2xl font-semibold tracking-tight">
+              <h1 className="text-2xl font-semibold tracking-tight text-white">
                 GradFlow
               </h1>
 
-              <p className="mt-0.5 text-xs text-[var(--gf-muted-on-dark)]">
-                Academic workspace
-              </p>
+              <p className="mt-0.5 text-xs text-slate-400">Academic cockpit</p>
             </div>
           </Link>
 
           <button
             type="button"
             onClick={closeMobileSidebar}
-            className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-sm text-[var(--gf-ink-on-dark)] lg:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-sm text-white lg:hidden"
             aria-label="Close sidebar"
           >
             ✕
@@ -164,7 +166,7 @@ export default function Sidebar() {
         {/* NAVIGATION */}
         <nav className="mt-8 flex flex-1 flex-col gap-8">
           <div>
-            <p className="px-3 text-xs font-semibold uppercase tracking-wide text-[var(--gf-muted-on-dark)]">
+            <p className="px-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
               General
             </p>
 
@@ -174,7 +176,7 @@ export default function Sidebar() {
           </div>
 
           <div>
-            <p className="px-3 text-xs font-semibold uppercase tracking-wide text-[var(--gf-muted-on-dark)]">
+            <p className="px-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
               Personal
             </p>
 
@@ -185,18 +187,16 @@ export default function Sidebar() {
         </nav>
 
         {/* FOCUS FLIGHT MINI INFO */}
-        <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+        <div className="rounded-3xl border border-white/10 bg-white/[0.06] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
           <div className="flex items-start gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--gf-primary-soft)] text-[var(--gf-primary)]">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-violet-400 text-slate-950 shadow-[0_0_18px_rgba(167,139,250,0.45)]">
               ✈
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-[var(--gf-ink-on-dark)]">
-                Focus Flight
-              </p>
+              <p className="text-sm font-semibold text-white">Focus Flight</p>
 
-              <p className="mt-1 text-xs leading-relaxed text-[var(--gf-muted-on-dark)]">
+              <p className="mt-1 text-xs leading-relaxed text-slate-400">
                 Keep your study journey steady, one focused session at a time.
               </p>
             </div>
@@ -209,10 +209,10 @@ export default function Sidebar() {
         </div>
 
         {/* FOOTER */}
-        <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-          <p className="text-xs text-[var(--gf-muted-on-dark)]">Signed in as</p>
+        <div className="mt-4 rounded-3xl border border-white/10 bg-white/[0.04] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+          <p className="text-xs text-slate-500">Signed in as</p>
 
-          <p className="mt-1 truncate text-sm font-semibold text-[var(--gf-ink-on-dark)]">
+          <p className="mt-1 truncate text-sm font-semibold text-white">
             Anisa
           </p>
         </div>

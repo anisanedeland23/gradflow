@@ -12,8 +12,6 @@ export default function DailyLogPage() {
   // ===============================
   // GLOBAL FOCUS FLIGHT STATE
   // ===============================
-  // Semua logic timer sekarang berasal dari FocusFlightProvider.
-  // Jadi timer tetap hidup walaupun user pindah halaman.
   const {
     mode,
     timerStatus,
@@ -45,14 +43,11 @@ export default function DailyLogPage() {
   // ===============================
   // FOCUS SESSION DATA
   // ===============================
-  // focusSessions menyimpan semua sesi Focus Flight yang sudah selesai.
-  // Data ini berasal dari localStorage gradflow-focus-sessions.
   const [focusSessions, setFocusSessions] = useState<FocusSession[]>([]);
 
   // ===============================
   // DAILY REFLECTION STATES
   // ===============================
-  // Data ini dipakai untuk menyimpan catatan/refleksi harian user.
   const [dailySummary, setDailySummary] = useState("");
   const [tomorrowPriority, setTomorrowPriority] = useState("");
   const [reflectionMessage, setReflectionMessage] = useState("");
@@ -76,8 +71,6 @@ export default function DailyLogPage() {
   // ===============================
   // LOAD TODAY DAILY LOG
   // ===============================
-  // Mengambil daily log hari ini dari localStorage.
-  // Kalau sudah pernah disimpan, isi textarea akan otomatis muncul lagi.
   const loadTodayDailyLog = () => {
     const savedDailyLogs = localStorage.getItem(STORAGE_KEYS.dailyLogs);
 
@@ -133,8 +126,6 @@ export default function DailyLogPage() {
   // ===============================
   // WEEK DAYS HELPER
   // ===============================
-  // Menghasilkan 7 hari terakhir untuk visual streak.
-  // Hari paling kanan adalah hari ini.
   const getLastSevenDays = () => {
     return Array.from({ length: 7 }).map((_, index) => {
       const date = subtractDays(new Date(), 6 - index);
@@ -154,8 +145,6 @@ export default function DailyLogPage() {
   // ===============================
   // AUTO REFRESH FOCUS SESSIONS
   // ===============================
-  // Saat focus session selesai, addActivityLog akan mengirim event.
-  // Event ini kita pakai untuk reload summary cards secara otomatis.
   useEffect(() => {
     loadFocusSessions();
     loadTodayDailyLog();
@@ -175,8 +164,14 @@ export default function DailyLogPage() {
 
   const modeBadgeStyle =
     mode === "focus"
-      ? "bg-blue-100 text-blue-700"
-      : "bg-amber-100 text-amber-700";
+      ? {
+          background: "var(--gf-sky)",
+          color: "var(--gf-link)",
+        }
+      : {
+          background: "var(--gf-yellow-soft)",
+          color: "var(--gf-warning)",
+        };
 
   const timerSubtitle =
     mode === "focus"
@@ -212,7 +207,6 @@ export default function DailyLogPage() {
   // ===============================
   // DAILY FOCUS STREAK
   // ===============================
-  // Streak dihitung dari hari berturut-turut yang punya minimal 1 focus session.
   const focusSessionDates = new Set(
     focusSessions.map((session) => session.date),
   );
@@ -239,8 +233,6 @@ export default function DailyLogPage() {
   // ===============================
   // FOCUS LEVEL DATA
   // ===============================
-  // 1 menit fokus = 1 XP.
-  // Setiap 100 XP, user naik 1 level.
   const totalFocusMinutes = focusSessions.reduce(
     (total, session) => total + session.totalFocusMinutes,
     0,
@@ -267,8 +259,6 @@ export default function DailyLogPage() {
   // ===============================
   // FOCUS CONTRIBUTION DATA
   // ===============================
-  // Contribution grid menampilkan 35 hari terakhir.
-  // Ini mirip GitHub contribution graph, tapi berdasarkan focus minutes.
   const getLastContributionDays = () => {
     return Array.from({ length: 35 }).map((_, index) => {
       const date = subtractDays(new Date(), 34 - index);
@@ -288,31 +278,44 @@ export default function DailyLogPage() {
 
   const contributionDays = getLastContributionDays();
 
-  const getContributionColor = (minutes: number) => {
+  const getContributionStyle = (minutes: number) => {
     if (minutes === 0) {
-      return "bg-slate-100 border-slate-200";
+      return {
+        background: "var(--gf-surface)",
+        borderColor: "var(--gf-border)",
+      };
     }
 
     if (minutes < 25) {
-      return "bg-green-100 border-green-200";
+      return {
+        background: "var(--gf-mint)",
+        borderColor: "var(--gf-border)",
+      };
     }
 
     if (minutes < 50) {
-      return "bg-green-300 border-green-300";
+      return {
+        background: "var(--gf-success-soft)",
+        borderColor: "var(--gf-success)",
+      };
     }
 
     if (minutes < 100) {
-      return "bg-green-500 border-green-500";
+      return {
+        background: "var(--gf-success)",
+        borderColor: "var(--gf-success)",
+      };
     }
 
-    return "bg-green-700 border-green-700";
+    return {
+      background: "var(--gf-primary)",
+      borderColor: "var(--gf-primary)",
+    };
   };
 
   // ===============================
   // WEEKLY EVALUATION DATA
   // ===============================
-  // Minggu ini dihitung sebagai 7 hari terakhir termasuk hari ini.
-  // Minggu lalu dihitung sebagai 7 hari sebelumnya.
   const todayDate = new Date();
 
   const thisWeekStart = subtractDays(todayDate, 6);
@@ -348,7 +351,8 @@ export default function DailyLogPage() {
         title: "Waiting for your first flight ✈️",
         description:
           "Weekly trend will appear after you complete focus sessions.",
-        style: "bg-slate-50 text-slate-700",
+        background: "var(--gf-surface)",
+        color: "var(--gf-muted)",
       };
     }
 
@@ -356,7 +360,8 @@ export default function DailyLogPage() {
       return {
         title: "Improving flight path 🚀",
         description: `Your focus time increased by ${weeklyTrendPercentage}% compared to last week.`,
-        style: "bg-green-50 text-green-700",
+        background: "var(--gf-success-soft)",
+        color: "var(--gf-success)",
       };
     }
 
@@ -366,7 +371,8 @@ export default function DailyLogPage() {
         description: `Your focus time dropped by ${Math.abs(
           weeklyTrendPercentage,
         )}% compared to last week. Refuel gently and restart.`,
-        style: "bg-amber-50 text-amber-700",
+        background: "var(--gf-yellow-soft)",
+        color: "var(--gf-warning)",
       };
     }
 
@@ -374,7 +380,8 @@ export default function DailyLogPage() {
       title: "Stable flight path ☁️",
       description:
         "Your focus time is similar to last week. Keep the rhythm steady.",
-      style: "bg-blue-50 text-blue-700",
+      background: "var(--gf-sky)",
+      color: "var(--gf-link)",
     };
   };
 
@@ -383,9 +390,6 @@ export default function DailyLogPage() {
   // ===============================
   // SAVE DAILY REFLECTION
   // ===============================
-  // Menyimpan refleksi harian.
-  // Kalau tanggal hari ini sudah punya log, data akan di-update.
-  // Kalau belum ada, data baru akan dibuat.
   const saveDailyReflection = () => {
     if (dailySummary.trim() === "" && tomorrowPriority.trim() === "") {
       setReflectionMessage(
@@ -460,18 +464,45 @@ export default function DailyLogPage() {
       {/* MAIN CONTENT */}
       <section className="min-h-screen p-3 pt-20 sm:p-4 sm:pt-20 lg:ml-72 lg:p-5">
         {/* PAGE HEADER */}
-        <div className="rounded-3xl bg-white p-5 shadow-sm">
+        <div className="gf-panel p-6">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-800">Daily Log</h1>
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Daily Log
+              </p>
 
-              <p className="mt-2 text-slate-500">
-                Track your focus flights, daily reflections, and learning
-                rhythm.
+              <h1
+                className="mt-2 text-3xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Focus Flight journal
+              </h1>
+
+              <p
+                className="mt-2 max-w-3xl text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Track your focus flights, daily reflections, focus streak,
+                contribution map, and learning rhythm.
               </p>
             </div>
 
-            <div className="w-fit rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-600">
+            <div
+              className="w-fit rounded-2xl px-4 py-3 text-sm font-bold"
+              style={{
+                background: "var(--gf-sky)",
+                color: "var(--gf-link)",
+              }}
+            >
               Focus Flight Control ✈️
             </div>
           </div>
@@ -481,22 +512,42 @@ export default function DailyLogPage() {
         <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12">
           {/* LEFT: FOCUS FLIGHT */}
           <div className="xl:col-span-8">
-            <div className="rounded-3xl bg-white p-6 shadow-sm">
+            <div className="gf-card p-6">
               {/* SECTION HEADER */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h2 className="text-xl font-bold text-slate-800">
+                  <p
+                    className="text-xs font-bold uppercase tracking-wide"
+                    style={{
+                      color: "var(--gf-muted)",
+                    }}
+                  >
                     Focus Flight
+                  </p>
+
+                  <h2
+                    className="mt-2 text-xl font-semibold tracking-tight"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
+                    Mission timer
                   </h2>
 
-                  <p className="mt-1 text-sm text-slate-500">
+                  <p
+                    className="mt-1 text-sm"
+                    style={{
+                      color: "var(--gf-muted)",
+                    }}
+                  >
                     Plan your mission, fly with focus, refuel during transit,
                     and continue the journey.
                   </p>
                 </div>
 
                 <div
-                  className={`w-fit rounded-xl px-3 py-2 text-sm font-semibold ${modeBadgeStyle}`}
+                  className="w-fit rounded-xl px-3 py-2 text-sm font-semibold"
+                  style={modeBadgeStyle}
                 >
                   {modeLabel}
                 </div>
@@ -505,24 +556,50 @@ export default function DailyLogPage() {
               {/* FOCUS FLIGHT BODY */}
               <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-5">
                 {/* MISSION SETUP */}
-                <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 lg:col-span-2">
+                <div
+                  className="rounded-3xl border p-5 lg:col-span-2"
+                  style={{
+                    background: "var(--gf-card-soft)",
+                    borderColor: "var(--gf-border)",
+                  }}
+                >
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                    <p
+                      className="text-xs font-bold uppercase tracking-wide"
+                      style={{
+                        color: "var(--gf-muted)",
+                      }}
+                    >
                       Pre-Flight Setup
                     </p>
 
-                    <h3 className="mt-2 text-lg font-bold text-slate-800">
-                      Today's Mission
+                    <h3
+                      className="mt-2 text-lg font-semibold"
+                      style={{
+                        color: "var(--gf-ink)",
+                      }}
+                    >
+                      Today&apos;s Mission
                     </h3>
 
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p
+                      className="mt-1 text-sm"
+                      style={{
+                        color: "var(--gf-muted)",
+                      }}
+                    >
                       Decide where your focus flight is heading.
                     </p>
                   </div>
 
                   <div className="mt-5 flex flex-col gap-4">
                     <div>
-                      <label className="text-sm font-medium text-slate-700">
+                      <label
+                        className="text-sm font-medium"
+                        style={{
+                          color: "var(--gf-ink)",
+                        }}
+                      >
                         Mission Name
                       </label>
 
@@ -534,12 +611,17 @@ export default function DailyLogPage() {
                           setSessionTitle(event.target.value)
                         }
                         disabled={hasStarted}
-                        className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500 disabled:cursor-not-allowed disabled:bg-slate-100"
+                        className="gf-input mt-2 disabled:cursor-not-allowed disabled:opacity-60"
                       />
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-slate-700">
+                      <label
+                        className="text-sm font-medium"
+                        style={{
+                          color: "var(--gf-ink)",
+                        }}
+                      >
                         Flight Route
                       </label>
 
@@ -547,7 +629,7 @@ export default function DailyLogPage() {
                         value={category}
                         onChange={(event) => setCategory(event.target.value)}
                         disabled={hasStarted}
-                        className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500 disabled:cursor-not-allowed disabled:bg-slate-100"
+                        className="gf-input mt-2 disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         <option value="Coding">Coding</option>
                         <option value="Skripsi">Skripsi</option>
@@ -557,9 +639,20 @@ export default function DailyLogPage() {
                       </select>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="rounded-2xl bg-white p-4">
-                        <label className="text-xs font-medium text-slate-500">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1 2xl:grid-cols-2">
+                      <div
+                        className="rounded-2xl border p-4"
+                        style={{
+                          background: "var(--gf-card)",
+                          borderColor: "var(--gf-border)",
+                        }}
+                      >
+                        <label
+                          className="text-xs font-medium"
+                          style={{
+                            color: "var(--gf-muted)",
+                          }}
+                        >
                           Focus Flight
                         </label>
 
@@ -575,17 +668,33 @@ export default function DailyLogPage() {
                               )
                             }
                             disabled={hasStarted}
-                            className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-800 outline-none transition focus:border-blue-500 disabled:cursor-not-allowed disabled:bg-slate-100"
+                            className="gf-input w-full disabled:cursor-not-allowed disabled:opacity-60"
                           />
 
-                          <span className="text-xs font-semibold text-slate-400">
+                          <span
+                            className="text-xs font-semibold"
+                            style={{
+                              color: "var(--gf-muted)",
+                            }}
+                          >
                             min
                           </span>
                         </div>
                       </div>
 
-                      <div className="rounded-2xl bg-white p-4">
-                        <label className="text-xs font-medium text-slate-500">
+                      <div
+                        className="rounded-2xl border p-4"
+                        style={{
+                          background: "var(--gf-card)",
+                          borderColor: "var(--gf-border)",
+                        }}
+                      >
+                        <label
+                          className="text-xs font-medium"
+                          style={{
+                            color: "var(--gf-muted)",
+                          }}
+                        >
                           Transit Break
                         </label>
 
@@ -601,10 +710,15 @@ export default function DailyLogPage() {
                               )
                             }
                             disabled={hasStarted}
-                            className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-800 outline-none transition focus:border-blue-500 disabled:cursor-not-allowed disabled:bg-slate-100"
+                            className="gf-input w-full disabled:cursor-not-allowed disabled:opacity-60"
                           />
 
-                          <span className="text-xs font-semibold text-slate-400">
+                          <span
+                            className="text-xs font-semibold"
+                            style={{
+                              color: "var(--gf-muted)",
+                            }}
+                          >
                             min
                           </span>
                         </div>
@@ -638,7 +752,7 @@ export default function DailyLogPage() {
                       {timerSubtitle}
                     </p>
 
-                    <h3 className="mt-4 text-7xl font-bold tracking-tight">
+                    <h3 className="mt-4 text-6xl font-bold tracking-tight sm:text-7xl">
                       {formatTimer(timeLeft)}
                     </h3>
 
@@ -714,20 +828,33 @@ export default function DailyLogPage() {
               </div>
 
               {/* TRANSIT / REFUEL MESSAGE */}
-              <div className="mt-4 rounded-3xl border border-dashed border-amber-200 bg-amber-50 p-5">
+              <div
+                className="mt-4 rounded-3xl border border-dashed p-5"
+                style={{
+                  background: "var(--gf-yellow-soft)",
+                  borderColor: "var(--gf-warning)",
+                  color: "var(--gf-warning)",
+                }}
+              >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <h3 className="text-sm font-bold text-amber-700">
+                    <h3 className="text-sm font-bold">
                       Transit / Refuel Reminder ⛽
                     </h3>
 
-                    <p className="mt-1 text-sm text-amber-700">
+                    <p className="mt-1 text-sm">
                       Break time is not wasted time. It is your plane refueling
                       before the next flight.
                     </p>
                   </div>
 
-                  <div className="w-fit rounded-xl bg-white px-3 py-2 text-xs font-semibold text-amber-700">
+                  <div
+                    className="w-fit rounded-xl px-3 py-2 text-xs font-semibold"
+                    style={{
+                      background: "var(--gf-card)",
+                      color: "var(--gf-warning)",
+                    }}
+                  >
                     Rest = part of progress
                   </div>
                 </div>
@@ -738,71 +865,107 @@ export default function DailyLogPage() {
           {/* RIGHT: SUMMARY + STREAK */}
           <div className="flex flex-col gap-4 xl:col-span-4">
             {/* TODAY SUMMARY COMPACT */}
-            <div className="rounded-3xl bg-white p-5 shadow-sm">
-              <div className="flex items-center justify-between">
+            <div className="gf-card p-5">
+              <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                  <p
+                    className="text-xs font-bold uppercase tracking-wide"
+                    style={{
+                      color: "var(--gf-muted)",
+                    }}
+                  >
                     Today Summary
                   </p>
 
-                  <h2 className="mt-2 text-xl font-bold text-slate-800">
+                  <h2
+                    className="mt-2 text-xl font-semibold tracking-tight"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     Flight Progress
                   </h2>
                 </div>
 
-                <div className="rounded-xl bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700">
+                <div
+                  className="rounded-xl px-3 py-2 text-xs font-bold"
+                  style={{
+                    background: "var(--gf-sky)",
+                    color: "var(--gf-link)",
+                  }}
+                >
                   Today
                 </div>
               </div>
 
               <div className="mt-5 grid grid-cols-2 gap-3">
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <p className="text-xs font-medium text-slate-500">
-                    Focus Time
-                  </p>
+                {[
+                  {
+                    label: "Focus Time",
+                    value: `${focusTimeToday} min`,
+                  },
+                  {
+                    label: "Completed Flights",
+                    value: completedFlightsToday,
+                  },
+                  {
+                    label: "Streak",
+                    value: `${dailyFocusStreak} days`,
+                  },
+                  {
+                    label: "Longest",
+                    value: `${longestFlightToday} min`,
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl border p-4"
+                    style={{
+                      background: "var(--gf-card-soft)",
+                      borderColor: "var(--gf-border)",
+                    }}
+                  >
+                    <p
+                      className="text-xs font-medium"
+                      style={{
+                        color: "var(--gf-muted)",
+                      }}
+                    >
+                      {item.label}
+                    </p>
 
-                  <h3 className="mt-1 text-xl font-bold text-slate-800">
-                    {focusTimeToday} min
-                  </h3>
-                </div>
-
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <p className="text-xs font-medium text-slate-500">
-                    Completed Flights
-                  </p>
-
-                  <h3 className="mt-1 text-xl font-bold text-slate-800">
-                    {completedFlightsToday}
-                  </h3>
-                </div>
-
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <p className="text-xs font-medium text-slate-500">Streak</p>
-
-                  <h3 className="mt-1 text-xl font-bold text-slate-800">
-                    {dailyFocusStreak} days
-                  </h3>
-                </div>
-
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <p className="text-xs font-medium text-slate-500">Longest</p>
-
-                  <h3 className="mt-1 text-xl font-bold text-slate-800">
-                    {longestFlightToday} min
-                  </h3>
-                </div>
+                    <h3
+                      className="mt-1 text-xl font-semibold tracking-tight"
+                      style={{
+                        color: "var(--gf-ink)",
+                      }}
+                    >
+                      {item.value}
+                    </h3>
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* DAILY FOCUS STREAK COMPACT */}
-            <div className="rounded-3xl bg-white p-5 shadow-sm">
+            <div className="gf-card p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                  <p
+                    className="text-xs font-bold uppercase tracking-wide"
+                    style={{
+                      color: "var(--gf-muted)",
+                    }}
+                  >
                     Daily Streak
                   </p>
 
-                  <h2 className="mt-2 text-2xl font-bold text-slate-800">
+                  <h2
+                    className="mt-2 text-2xl font-semibold tracking-tight"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     🔥 {dailyFocusStreak} days
                   </h2>
                 </div>
@@ -816,21 +979,35 @@ export default function DailyLogPage() {
                   return (
                     <div key={day.dateString} className="text-center">
                       <div
-                        className={`mx-auto flex h-9 w-9 items-center justify-center rounded-full border text-xs font-bold transition ${
-                          isActive
-                            ? "border-green-500 bg-green-500 text-white shadow-sm"
+                        className="mx-auto flex h-9 w-9 items-center justify-center rounded-full border text-xs font-bold transition"
+                        style={{
+                          background: isActive
+                            ? "var(--gf-success)"
                             : isCurrentDay
-                              ? "border-blue-500 bg-blue-50 text-blue-700"
-                              : "border-slate-200 bg-slate-100 text-slate-400"
-                        }`}
+                              ? "var(--gf-sky)"
+                              : "var(--gf-surface)",
+                          borderColor: isActive
+                            ? "var(--gf-success)"
+                            : isCurrentDay
+                              ? "var(--gf-link)"
+                              : "var(--gf-border)",
+                          color: isActive
+                            ? "#ffffff"
+                            : isCurrentDay
+                              ? "var(--gf-link)"
+                              : "var(--gf-muted)",
+                        }}
                       >
                         {isActive ? "✓" : day.dayNumber}
                       </div>
 
                       <p
-                        className={`mt-2 text-[10px] font-semibold ${
-                          isCurrentDay ? "text-blue-600" : "text-slate-500"
-                        }`}
+                        className="mt-2 text-[10px] font-semibold"
+                        style={{
+                          color: isCurrentDay
+                            ? "var(--gf-link)"
+                            : "var(--gf-muted)",
+                        }}
                       >
                         {day.dayLabel}
                       </p>
@@ -845,127 +1022,230 @@ export default function DailyLogPage() {
         {/* GAMIFICATION GRID */}
         <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
           {/* FOCUS LEVEL */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <div className="gf-card p-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Focus Level
                 </p>
 
-                <h2 className="mt-2 text-3xl font-bold text-slate-800">
+                <h2
+                  className="mt-2 text-3xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Level {currentLevel} — {getLevelTitle(currentLevel)}
                 </h2>
 
-                <p className="mt-2 text-sm text-slate-500">
+                <p
+                  className="mt-2 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Earn XP from every completed focus flight. Keep flying to
                   level up.
                 </p>
               </div>
 
-              <div className="w-fit rounded-2xl bg-purple-100 px-4 py-3 text-sm font-bold text-purple-700">
+              <div
+                className="w-fit rounded-2xl px-4 py-3 text-sm font-bold"
+                style={{
+                  background: "var(--gf-lavender)",
+                  color: "var(--gf-primary)",
+                }}
+              >
                 {currentLevelXp}/{XP_PER_LEVEL} XP
               </div>
             </div>
 
             <div className="mt-6">
-              <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
+              <div
+                className="flex items-center justify-between text-xs font-semibold"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 <span>Progress to next level</span>
                 <span>{levelProgress}%</span>
               </div>
 
-              <div className="mt-2 h-4 overflow-hidden rounded-full bg-slate-100">
+              <div
+                className="mt-2 h-4 overflow-hidden rounded-full"
+                style={{
+                  background: "var(--gf-surface)",
+                }}
+              >
                 <div
-                  className="h-full rounded-full bg-purple-600 transition-all duration-500"
+                  className="h-full rounded-full transition-all duration-500"
                   style={{
                     width: `${levelProgress}%`,
+                    background: "var(--gf-primary)",
                   }}
                 />
               </div>
             </div>
 
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-xs font-medium text-slate-500">
-                  Lifetime Focus
-                </p>
+              {[
+                {
+                  label: "Lifetime Focus",
+                  value: `${totalFocusMinutes} min`,
+                },
+                {
+                  label: "Current XP",
+                  value: `${currentLevelXp} XP`,
+                },
+                {
+                  label: "Next Level Target",
+                  value: `${XP_PER_LEVEL - currentLevelXp} XP left`,
+                },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border p-4"
+                  style={{
+                    background: "var(--gf-card-soft)",
+                    borderColor: "var(--gf-border)",
+                  }}
+                >
+                  <p
+                    className="text-xs font-medium"
+                    style={{
+                      color: "var(--gf-muted)",
+                    }}
+                  >
+                    {item.label}
+                  </p>
 
-                <p className="mt-1 text-lg font-bold text-slate-800">
-                  {totalFocusMinutes} min
-                </p>
-              </div>
-
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-xs font-medium text-slate-500">Current XP</p>
-
-                <p className="mt-1 text-lg font-bold text-slate-800">
-                  {currentLevelXp} XP
-                </p>
-              </div>
-
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-xs font-medium text-slate-500">
-                  Next Level Target
-                </p>
-
-                <p className="mt-1 text-lg font-bold text-slate-800">
-                  {XP_PER_LEVEL - currentLevelXp} XP left
-                </p>
-              </div>
+                  <p
+                    className="mt-1 text-lg font-semibold"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
+                    {item.value}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* FOCUS CONTRIBUTION GRID */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <div className="gf-card p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Focus Contribution
                 </p>
 
-                <h2 className="mt-2 text-2xl font-bold text-slate-800">
+                <h2
+                  className="mt-2 text-2xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Last 35 Days
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p
+                  className="mt-1 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   A small map of your focus consistency. Every square is one
                   day.
                 </p>
               </div>
 
-              <div className="w-fit rounded-2xl bg-green-100 px-4 py-3 text-sm font-bold text-green-700">
+              <div
+                className="w-fit rounded-2xl px-4 py-3 text-sm font-bold"
+                style={{
+                  background: "var(--gf-mint)",
+                  color: "var(--gf-success)",
+                }}
+              >
                 {totalFocusMinutes} lifetime XP
               </div>
             </div>
 
             <div className="mt-6 overflow-x-auto pb-2">
               <div className="grid w-max grid-flow-col grid-rows-7 gap-2">
-                {contributionDays.map((day) => (
-                  <div
-                    key={day.dateString}
-                    title={`${day.dateString} • ${day.totalMinutes} min`}
-                    className={`h-5 w-5 rounded-md border transition hover:scale-110 ${getContributionColor(
-                      day.totalMinutes,
-                    )}`}
-                  />
-                ))}
+                {contributionDays.map((day) => {
+                  const contributionStyle = getContributionStyle(
+                    day.totalMinutes,
+                  );
+
+                  return (
+                    <div
+                      key={day.dateString}
+                      title={`${day.dateString} • ${day.totalMinutes} min`}
+                      className="h-5 w-5 rounded-md border transition hover:scale-110"
+                      style={{
+                        background: contributionStyle.background,
+                        borderColor: contributionStyle.borderColor,
+                      }}
+                    />
+                  );
+                })}
               </div>
             </div>
 
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-xs text-slate-500">
+              <p
+                className="text-xs"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Darker squares mean more focus minutes on that day.
               </p>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-400">Less</span>
+                <span
+                  className="text-xs"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  Less
+                </span>
 
-                <div className="h-4 w-4 rounded bg-slate-100 ring-1 ring-slate-200" />
-                <div className="h-4 w-4 rounded bg-green-100 ring-1 ring-green-200" />
-                <div className="h-4 w-4 rounded bg-green-300 ring-1 ring-green-300" />
-                <div className="h-4 w-4 rounded bg-green-500 ring-1 ring-green-500" />
-                <div className="h-4 w-4 rounded bg-green-700 ring-1 ring-green-700" />
+                {[0, 15, 35, 75, 120].map((minutes) => {
+                  const contributionStyle = getContributionStyle(minutes);
 
-                <span className="text-xs text-slate-400">More</span>
+                  return (
+                    <div
+                      key={minutes}
+                      className="h-4 w-4 rounded border"
+                      style={{
+                        background: contributionStyle.background,
+                        borderColor: contributionStyle.borderColor,
+                      }}
+                    />
+                  );
+                })}
+
+                <span
+                  className="text-xs"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  More
+                </span>
               </div>
             </div>
           </div>
@@ -974,50 +1254,123 @@ export default function DailyLogPage() {
         {/* LOWER GRID */}
         <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
           {/* WEEKLY EVALUATION */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-800">
+          <div className="gf-card p-6">
+            <p
+              className="text-xs font-bold uppercase tracking-wide"
+              style={{
+                color: "var(--gf-muted)",
+              }}
+            >
               Weekly Evaluation
+            </p>
+
+            <h2
+              className="mt-2 text-xl font-semibold tracking-tight"
+              style={{
+                color: "var(--gf-ink)",
+              }}
+            >
+              Focus comparison
             </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
+            <p
+              className="mt-1 text-sm"
+              style={{
+                color: "var(--gf-muted)",
+              }}
+            >
               Compare your last 7 days with the previous 7 days.
             </p>
 
             <div className="mt-6 flex flex-col gap-3">
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-sm font-medium text-slate-500">
+              <div
+                className="rounded-2xl border p-4"
+                style={{
+                  background: "var(--gf-card-soft)",
+                  borderColor: "var(--gf-border)",
+                }}
+              >
+                <p
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Last 7 Days
                 </p>
 
-                <h3 className="mt-2 text-2xl font-bold text-slate-800">
+                <h3
+                  className="mt-2 text-2xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   {thisWeekFocusMinutes} min
                 </h3>
 
-                <p className="mt-1 text-xs text-slate-400">
+                <p
+                  className="mt-1 text-xs"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   {getDateString(thisWeekStart)} — {getDateString(thisWeekEnd)}
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-sm font-medium text-slate-500">
+              <div
+                className="rounded-2xl border p-4"
+                style={{
+                  background: "var(--gf-card-soft)",
+                  borderColor: "var(--gf-border)",
+                }}
+              >
+                <p
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Previous 7 Days
                 </p>
 
-                <h3 className="mt-2 text-2xl font-bold text-slate-800">
+                <h3
+                  className="mt-2 text-2xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   {lastWeekFocusMinutes} min
                 </h3>
 
-                <p className="mt-1 text-xs text-slate-400">
+                <p
+                  className="mt-1 text-xs"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   {getDateString(lastWeekStart)} — {getDateString(lastWeekEnd)}
                 </p>
               </div>
 
-              <div className={`rounded-2xl p-4 ${weeklyStatus.style}`}>
+              <div
+                className="rounded-2xl p-4"
+                style={{
+                  background: weeklyStatus.background,
+                  color: weeklyStatus.color,
+                }}
+              >
                 <p className="text-sm font-bold">{weeklyStatus.title}</p>
 
                 <p className="mt-1 text-xs">{weeklyStatus.description}</p>
 
-                <div className="mt-3 rounded-xl bg-white/70 px-3 py-2 text-xs font-bold">
+                <div
+                  className="mt-3 rounded-xl px-3 py-2 text-xs font-bold"
+                  style={{
+                    background: "var(--gf-card)",
+                    color: weeklyStatus.color,
+                  }}
+                >
                   {weeklyDifference > 0
                     ? `+${weeklyDifference} min`
                     : `${weeklyDifference} min`}
@@ -1027,20 +1380,44 @@ export default function DailyLogPage() {
           </div>
 
           {/* DAILY REFLECTION */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm xl:col-span-2">
+          <div className="gf-card p-6 xl:col-span-2">
             <div>
-              <h2 className="text-xl font-bold text-slate-800">
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Daily Reflection
+              </p>
+
+              <h2
+                className="mt-2 text-xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Review today, prepare tomorrow
               </h2>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p
+                className="mt-1 text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Capture what you learned today and what to continue tomorrow.
               </p>
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   What did I work on today?
                 </label>
 
@@ -1051,12 +1428,17 @@ export default function DailyLogPage() {
                     setDailySummary(event.target.value);
                     setReflectionMessage("");
                   }}
-                  className="mt-2 min-h-32 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2 min-h-32 resize-none"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Tomorrow priority
                 </label>
 
@@ -1067,7 +1449,7 @@ export default function DailyLogPage() {
                     setTomorrowPriority(event.target.value);
                     setReflectionMessage("");
                   }}
-                  className="mt-2 min-h-32 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2 min-h-32 resize-none"
                 />
               </div>
             </div>
@@ -1075,18 +1457,27 @@ export default function DailyLogPage() {
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               {reflectionMessage ? (
                 <p
-                  className={`rounded-xl px-4 py-3 text-sm font-medium ${
-                    reflectionMessage.includes("saved")
-                      ? "bg-green-50 text-green-700"
-                      : "bg-red-50 text-red-600"
-                  }`}
+                  className="rounded-xl px-4 py-3 text-sm font-medium"
+                  style={{
+                    background: reflectionMessage.includes("saved")
+                      ? "var(--gf-success-soft)"
+                      : "var(--gf-danger-soft)",
+                    color: reflectionMessage.includes("saved")
+                      ? "var(--gf-success)"
+                      : "var(--gf-danger)",
+                  }}
                 >
                   {reflectionMessage}
                 </p>
               ) : (
-                <p className="text-sm text-slate-500">
-                  Save today’s reflection so you can review your learning rhythm
-                  later.
+                <p
+                  className="text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  Save today&apos;s reflection so you can review your learning
+                  rhythm later.
                 </p>
               )}
 

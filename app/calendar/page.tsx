@@ -230,27 +230,104 @@ export default function CalendarPage() {
     setIsDateModalOpen(false);
   };
 
+  // ===============================
+  // UI HELPERS
+  // ===============================
+  const isDeadlineType = (eventType: string) => {
+    return (
+      eventType === "assignment" || eventType === "quiz" || eventType === "test"
+    );
+  };
+
+  const getEventTone = (eventType: string) => {
+    if (isDeadlineType(eventType)) {
+      return {
+        background: "var(--gf-danger-soft)",
+        color: "var(--gf-danger)",
+        label: "DEADLINE",
+      };
+    }
+
+    return {
+      background: "var(--gf-sky)",
+      color: "var(--gf-link)",
+      label: "REMINDER",
+    };
+  };
+
   return (
     <main className="gf-page">
       <Sidebar />
 
       <section className="min-h-screen p-3 pt-20 sm:p-4 sm:pt-20 lg:ml-72 lg:p-5">
         {/* PAGE HEADER */}
-        <div className="rounded-3xl bg-white p-6 shadow-sm">
-          <h1 className="text-3xl font-bold text-slate-800">Calendar</h1>
+        <div className="gf-panel p-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Calendar
+              </p>
 
-          <p className="mt-2 text-slate-500">
-            Manage your academic and career schedule.
-          </p>
+              <h1
+                className="mt-2 text-3xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Academic schedule
+              </h1>
+
+              <p
+                className="mt-2 text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Manage your academic deadlines, reminders, guidance sessions,
+                and career schedule.
+              </p>
+            </div>
+
+            <div
+              className="w-fit rounded-2xl px-4 py-3 text-sm font-bold"
+              style={{
+                background: "var(--gf-lavender)",
+                color: "var(--gf-primary)",
+              }}
+            >
+              Schedule Control
+            </div>
+          </div>
 
           {/* ACTION BAR */}
-          <div className="mt-6 flex flex-col gap-4 rounded-3xl bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div
+            className="mt-6 flex flex-col gap-4 rounded-3xl border p-4 sm:flex-row sm:items-center sm:justify-between"
+            style={{
+              background: "var(--gf-card-soft)",
+              borderColor: "var(--gf-border)",
+            }}
+          >
             <div>
-              <h2 className="text-lg font-bold text-slate-800">
+              <h2
+                className="text-lg font-semibold"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
                 Event Manager
               </h2>
 
-              <p className="text-sm text-slate-500">
+              <p
+                className="text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Create and manage your schedule.
               </p>
             </div>
@@ -262,15 +339,27 @@ export default function CalendarPage() {
         </div>
 
         {/* CALENDAR UI */}
-        <div className="mt-4 rounded-3xl bg-white p-4 shadow-sm">
+        <div className="gf-card mt-4 p-5">
           {/* TOP BAR */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-xl font-bold text-slate-800">
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Monthly Calendar
-              </h2>
+              </p>
 
-              <p className="text-sm text-slate-500">Visualize your schedule</p>
+              <h2
+                className="mt-2 text-xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Visualize your schedule
+              </h2>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -282,7 +371,14 @@ export default function CalendarPage() {
                 ←
               </AppButton>
 
-              <div className="rounded-xl bg-slate-100 px-4 py-2 font-semibold text-slate-700">
+              <div
+                className="rounded-xl border px-4 py-2 font-semibold"
+                style={{
+                  background: "var(--gf-card-soft)",
+                  borderColor: "var(--gf-border)",
+                  color: "var(--gf-ink)",
+                }}
+              >
                 {format(currentMonth, "MMMM yyyy")}
               </div>
 
@@ -303,7 +399,12 @@ export default function CalendarPage() {
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
                 <div
                   key={day}
-                  className="rounded-xl bg-slate-100 py-3 text-center text-sm font-semibold text-slate-600"
+                  className="rounded-xl border py-3 text-center text-sm font-semibold"
+                  style={{
+                    background: "var(--gf-card-soft)",
+                    borderColor: "var(--gf-border)",
+                    color: "var(--gf-muted)",
+                  }}
                 >
                   {day}
                 </div>
@@ -320,6 +421,8 @@ export default function CalendarPage() {
                   (event) => event.date === format(day, "yyyy-MM-dd"),
                 );
 
+                const todayCell = isToday(day);
+
                 return (
                   <div
                     key={day.toString()}
@@ -334,17 +437,25 @@ export default function CalendarPage() {
 
                       openAddModalFromDate(day);
                     }}
-                    className={`h-28 cursor-pointer rounded-2xl border p-2 transition hover:scale-[1.02] hover:shadow-md ${
-                      isToday(day)
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-slate-200 bg-white"
-                    }`}
+                    className="h-28 cursor-pointer rounded-2xl border p-2 transition hover:scale-[1.02]"
+                    style={{
+                      background: todayCell
+                        ? "var(--gf-primary-soft)"
+                        : "var(--gf-card)",
+                      borderColor: todayCell
+                        ? "var(--gf-primary)"
+                        : "var(--gf-border)",
+                      boxShadow: "var(--gf-shadow-sm)",
+                    }}
                   >
                     <div className="flex items-center justify-between">
                       <span
-                        className={`text-sm font-semibold ${
-                          isToday(day) ? "text-blue-600" : "text-slate-700"
-                        }`}
+                        className="text-sm font-semibold"
+                        style={{
+                          color: todayCell
+                            ? "var(--gf-primary)"
+                            : "var(--gf-ink)",
+                        }}
                       >
                         {format(day, "d")}
                       </span>
@@ -352,17 +463,16 @@ export default function CalendarPage() {
 
                     <div className="mt-2 flex flex-col gap-1 overflow-hidden">
                       {dayEvents.slice(0, 2).map((event) => {
-                        const isDeadline =
-                          event.type === "assignment" ||
-                          event.type === "quiz" ||
-                          event.type === "test";
+                        const tone = getEventTone(event.type);
 
                         return (
                           <div
                             key={event.id}
-                            className={`truncate rounded-lg px-2 py-1 text-[10px] font-medium text-white ${
-                              isDeadline ? "bg-red-500" : "bg-blue-500"
-                            }`}
+                            className="truncate rounded-lg px-2 py-1 text-[10px] font-medium"
+                            style={{
+                              background: tone.background,
+                              color: tone.color,
+                            }}
                           >
                             {event.title}
                           </div>
@@ -370,7 +480,12 @@ export default function CalendarPage() {
                       })}
 
                       {dayEvents.length > 2 && (
-                        <div className="text-[10px] text-slate-500">
+                        <div
+                          className="text-[10px]"
+                          style={{
+                            color: "var(--gf-muted)",
+                          }}
+                        >
                           +{dayEvents.length - 2} more
                         </div>
                       )}
@@ -383,19 +498,44 @@ export default function CalendarPage() {
         </div>
 
         {/* EVENT LIST */}
-        <div className="mt-4 rounded-3xl bg-white p-4 shadow-sm">
+        <div className="gf-card mt-4 p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-lg font-bold text-slate-800">
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Upcoming Events
+              </p>
+
+              <h2
+                className="mt-2 text-xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Scheduled activities
               </h2>
 
-              <p className="text-sm text-slate-500">
+              <p
+                className="text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Your scheduled activities and deadlines.
               </p>
             </div>
 
-            <div className="rounded-xl bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600">
+            <div
+              className="w-fit rounded-xl px-3 py-2 text-sm font-medium"
+              style={{
+                background: "var(--gf-surface)",
+                color: "var(--gf-muted)",
+              }}
+            >
               {events.length} Events
             </div>
           </div>
@@ -416,31 +556,50 @@ export default function CalendarPage() {
                   new Date(a.date).getTime() - new Date(b.date).getTime(),
               )
               .map((event) => {
-                const isDeadline =
-                  event.type === "assignment" ||
-                  event.type === "quiz" ||
-                  event.type === "test";
+                const tone = getEventTone(event.type);
+                const isDeadline = isDeadlineType(event.type);
 
                 return (
                   <div
                     key={event.id}
-                    className={`flex flex-col gap-4 rounded-2xl border p-4 transition hover:shadow-md sm:flex-row sm:items-center sm:justify-between ${
-                      isDeadline
-                        ? "border-red-200 bg-red-50"
-                        : "border-blue-200 bg-blue-50"
-                    }`}
+                    className="flex flex-col gap-4 rounded-2xl border p-4 transition hover:-translate-y-0.5 sm:flex-row sm:items-center sm:justify-between"
+                    style={{
+                      background: isDeadline
+                        ? "var(--gf-danger-soft)"
+                        : "var(--gf-card-soft)",
+                      borderColor: isDeadline
+                        ? "var(--gf-danger)"
+                        : "var(--gf-border)",
+                      boxShadow: "var(--gf-shadow-sm)",
+                    }}
                   >
                     <div>
-                      <h3 className="font-semibold text-slate-800">
+                      <h3
+                        className="font-semibold"
+                        style={{
+                          color: "var(--gf-ink)",
+                        }}
+                      >
                         {event.title}
                       </h3>
 
-                      <div className="mt-1 flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-white px-2 py-1 text-xs font-medium text-slate-600">
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <span
+                          className="gf-badge"
+                          style={{
+                            background: tone.background,
+                            color: tone.color,
+                          }}
+                        >
                           {event.type}
                         </span>
 
-                        <span className="text-sm text-slate-500">
+                        <span
+                          className="text-sm"
+                          style={{
+                            color: "var(--gf-muted)",
+                          }}
+                        >
                           {event.date}
                         </span>
                       </div>
@@ -448,13 +607,15 @@ export default function CalendarPage() {
 
                     <div className="flex flex-wrap items-center gap-2">
                       <div
-                        className={`rounded-xl px-3 py-2 text-xs font-semibold ${
-                          isDeadline
-                            ? "bg-red-500 text-white"
-                            : "bg-blue-500 text-white"
-                        }`}
+                        className="rounded-xl px-3 py-2 text-xs font-semibold"
+                        style={{
+                          background: isDeadline
+                            ? "var(--gf-danger)"
+                            : "var(--gf-primary)",
+                          color: "#ffffff",
+                        }}
                       >
-                        {isDeadline ? "DEADLINE" : "REMINDER"}
+                        {tone.label}
                       </div>
 
                       <AppButton
@@ -483,10 +644,31 @@ export default function CalendarPage() {
       {/* ADD / EDIT EVENT MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-sm sm:items-center">
-          <div className="my-6 w-full max-w-md scale-100 rounded-3xl bg-white p-6 shadow-2xl transition-all duration-300 animate-in zoom-in-95">
+          <div
+            className="my-6 w-full max-w-md scale-100 rounded-3xl border p-6 shadow-2xl transition-all duration-300 animate-in zoom-in-95"
+            style={{
+              background: "var(--gf-card)",
+              borderColor: "var(--gf-border)",
+              color: "var(--gf-ink)",
+            }}
+          >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold text-slate-800">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  {editingEvent ? "Edit event" : "New event"}
+                </p>
+
+                <h2
+                  className="mt-2 text-2xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   {editingEvent
                     ? "Edit Event"
                     : selectedDate
@@ -494,8 +676,13 @@ export default function CalendarPage() {
                       : "Add New Event"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
-                  Organize your important schedule
+                <p
+                  className="mt-1 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  Organize your important schedule.
                 </p>
               </div>
 
@@ -504,7 +691,12 @@ export default function CalendarPage() {
 
             <div className="mt-6 flex flex-col gap-4">
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Event Title
                 </label>
 
@@ -513,19 +705,24 @@ export default function CalendarPage() {
                   placeholder="Enter event..."
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Event Type
                 </label>
 
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 >
                   <option value="assignment">Assignment</option>
                   <option value="quiz">Quiz</option>
@@ -537,7 +734,12 @@ export default function CalendarPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Date
                 </label>
 
@@ -545,12 +747,18 @@ export default function CalendarPage() {
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               {eventError && (
-                <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                <p
+                  className="rounded-xl px-4 py-3 text-sm font-medium"
+                  style={{
+                    background: "var(--gf-danger-soft)",
+                    color: "var(--gf-danger)",
+                  }}
+                >
                   {eventError}
                 </p>
               )}
@@ -573,14 +781,40 @@ export default function CalendarPage() {
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-sm sm:items-center">
           <div className="absolute inset-0" onClick={closeDateModal} />
 
-          <div className="relative z-10 my-6 w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl">
+          <div
+            className="relative z-10 my-6 w-full max-w-lg rounded-3xl border p-6 shadow-2xl"
+            style={{
+              background: "var(--gf-card)",
+              borderColor: "var(--gf-border)",
+              color: "var(--gf-ink)",
+            }}
+          >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold text-slate-800">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  Selected date
+                </p>
+
+                <h2
+                  className="mt-2 text-2xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   {format(selectedDate, "MMMM d, yyyy")}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p
+                  className="mt-1 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Events on this day
                 </p>
 
@@ -614,37 +848,53 @@ export default function CalendarPage() {
               )}
 
               {selectedDateEvents.map((event) => {
-                const isDeadline =
-                  event.type === "assignment" ||
-                  event.type === "quiz" ||
-                  event.type === "test";
+                const tone = getEventTone(event.type);
+                const isDeadline = isDeadlineType(event.type);
 
                 return (
                   <div
                     key={event.id}
-                    className={`rounded-2xl border p-4 ${
-                      isDeadline
-                        ? "border-red-200 bg-red-50"
-                        : "border-blue-200 bg-blue-50"
-                    }`}
+                    className="rounded-2xl border p-4"
+                    style={{
+                      background: isDeadline
+                        ? "var(--gf-danger-soft)"
+                        : "var(--gf-card-soft)",
+                      borderColor: isDeadline
+                        ? "var(--gf-danger)"
+                        : "var(--gf-border)",
+                    }}
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div>
-                        <h3 className="font-semibold text-slate-800">
+                        <h3
+                          className="font-semibold"
+                          style={{
+                            color: "var(--gf-ink)",
+                          }}
+                        >
                           {event.title}
                         </h3>
 
-                        <p className="mt-1 text-sm text-slate-500">
+                        <p
+                          className="mt-1 text-sm"
+                          style={{
+                            color: "var(--gf-muted)",
+                          }}
+                        >
                           {event.type}
                         </p>
                       </div>
 
                       <div
-                        className={`w-fit rounded-xl px-3 py-2 text-xs font-semibold text-white ${
-                          isDeadline ? "bg-red-500" : "bg-blue-500"
-                        }`}
+                        className="w-fit rounded-xl px-3 py-2 text-xs font-semibold"
+                        style={{
+                          background: isDeadline
+                            ? "var(--gf-danger)"
+                            : "var(--gf-primary)",
+                          color: "#ffffff",
+                        }}
                       >
-                        {isDeadline ? "DEADLINE" : "REMINDER"}
+                        {tone.label}
                       </div>
                     </div>
                   </div>

@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import AppButton from "@/components/AppButton";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
+import EmptyState from "@/components/EmptyState";
 import { STORAGE_KEYS } from "@/lib/storageKeys";
 import type { AssetCategory, AssetItem, AssetType } from "@/types/gradflow";
+
+type SummaryTone = "sky" | "lavender" | "peach" | "mint";
 
 export default function AssetsPage() {
   // ===============================
@@ -149,6 +152,144 @@ export default function AssetsPage() {
     return matchesSearch && matchesCategory;
   });
 
+  // ===============================
+  // UI HELPERS
+  // ===============================
+  const toneStyles: Record<
+    SummaryTone,
+    {
+      background: string;
+      color: string;
+      icon: string;
+    }
+  > = {
+    sky: {
+      background: "var(--gf-sky)",
+      color: "var(--gf-link)",
+      icon: "⌘",
+    },
+    lavender: {
+      background: "var(--gf-lavender)",
+      color: "var(--gf-primary)",
+      icon: "□",
+    },
+    peach: {
+      background: "var(--gf-peach)",
+      color: "var(--gf-warning)",
+      icon: "◇",
+    },
+    mint: {
+      background: "var(--gf-mint)",
+      color: "var(--gf-success)",
+      icon: "✦",
+    },
+  };
+
+  const summaryItems = [
+    {
+      title: "Total Assets",
+      value: totalAssets,
+      description: "All saved resources",
+      tone: "sky" as SummaryTone,
+    },
+    {
+      title: "Documents",
+      value: documentAssets,
+      description: "Docs, reports, templates",
+      tone: "lavender" as SummaryTone,
+    },
+    {
+      title: "Project Assets",
+      value: projectAssets,
+      description: "Design, code, datasets",
+      tone: "peach" as SummaryTone,
+    },
+    {
+      title: "References",
+      value: referenceAssets,
+      description: "Journals, videos, links",
+      tone: "mint" as SummaryTone,
+    },
+  ];
+
+  const getCategoryStyle = (category: AssetCategory) => {
+    switch (category) {
+      case "Skripsi":
+        return {
+          background: "var(--gf-lavender)",
+          color: "var(--gf-primary)",
+        };
+
+      case "Project":
+        return {
+          background: "var(--gf-sky)",
+          color: "var(--gf-link)",
+        };
+
+      case "Career":
+        return {
+          background: "var(--gf-mint)",
+          color: "var(--gf-success)",
+        };
+
+      case "Course":
+        return {
+          background: "var(--gf-peach)",
+          color: "var(--gf-warning)",
+        };
+
+      case "Personal":
+        return {
+          background: "var(--gf-rose)",
+          color: "var(--gf-danger)",
+        };
+
+      default:
+        return {
+          background: "var(--gf-surface)",
+          color: "var(--gf-muted)",
+        };
+    }
+  };
+
+  const getTypeStyle = (type: AssetType) => {
+    switch (type) {
+      case "Document":
+      case "Template":
+        return {
+          background: "var(--gf-lavender)",
+          color: "var(--gf-primary)",
+        };
+
+      case "Design":
+        return {
+          background: "var(--gf-rose)",
+          color: "var(--gf-danger)",
+        };
+
+      case "Code":
+      case "Dataset":
+        return {
+          background: "var(--gf-sky)",
+          color: "var(--gf-link)",
+        };
+
+      case "Reference":
+      case "Video":
+      case "Link":
+        return {
+          background: "var(--gf-mint)",
+          color: "var(--gf-success)",
+        };
+
+      default:
+        return {
+          background: "var(--gf-surface)",
+          color: "var(--gf-muted)",
+        };
+    }
+  };
+
   return (
     <main className="gf-page">
       {/* SIDEBAR */}
@@ -157,93 +298,151 @@ export default function AssetsPage() {
       {/* MAIN CONTENT */}
       <section className="min-h-screen p-3 pt-20 sm:p-4 sm:pt-20 lg:ml-72 lg:p-5">
         {/* PAGE HEADER */}
-        <div className="rounded-3xl bg-white p-6 shadow-sm">
+        <div className="gf-panel p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-800">Assets</h1>
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Assets
+              </p>
 
-              <p className="mt-2 text-slate-500">
+              <h1
+                className="mt-2 text-3xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Resource library
+              </h1>
+
+              <p
+                className="mt-2 max-w-3xl text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Save and organize important links, references, templates,
                 documents, code, designs, datasets, and learning resources.
               </p>
             </div>
 
-            <div className="w-fit rounded-2xl bg-blue-100 px-4 py-3 text-sm font-bold text-blue-700">
-              Resource Library
+            <div
+              className="w-fit rounded-2xl px-4 py-3 text-sm font-bold"
+              style={{
+                background: "var(--gf-sky)",
+                color: "var(--gf-link)",
+              }}
+            >
+              Academic Assets
             </div>
           </div>
         </div>
 
         {/* SUMMARY CARDS */}
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-2xl bg-white p-4 shadow-sm">
-            <p className="text-sm font-medium text-slate-500">Total Assets</p>
+          {summaryItems.map((item) => {
+            const tone = toneStyles[item.tone];
 
-            <h2 className="mt-2 text-2xl font-bold text-slate-800">
-              {totalAssets}
-            </h2>
+            return (
+              <div
+                key={item.title}
+                className="rounded-2xl border p-4 transition hover:-translate-y-0.5"
+                style={{
+                  background: "var(--gf-card)",
+                  borderColor: "var(--gf-border)",
+                  boxShadow: "var(--gf-shadow-sm)",
+                }}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p
+                      className="text-sm font-medium"
+                      style={{
+                        color: "var(--gf-muted)",
+                      }}
+                    >
+                      {item.title}
+                    </p>
 
-            <p className="mt-1 text-xs text-slate-400">All saved resources</p>
-          </div>
+                    <h2
+                      className="mt-2 text-2xl font-semibold tracking-tight"
+                      style={{
+                        color: "var(--gf-ink)",
+                      }}
+                    >
+                      {item.value}
+                    </h2>
+                  </div>
 
-          <div className="rounded-2xl bg-white p-4 shadow-sm">
-            <p className="text-sm font-medium text-slate-500">Documents</p>
+                  <div
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-base"
+                    style={{
+                      background: tone.background,
+                      color: tone.color,
+                    }}
+                  >
+                    {tone.icon}
+                  </div>
+                </div>
 
-            <h2 className="mt-2 text-2xl font-bold text-slate-800">
-              {documentAssets}
-            </h2>
-
-            <p className="mt-1 text-xs text-slate-400">
-              Docs, reports, templates
-            </p>
-          </div>
-
-          <div className="rounded-2xl bg-white p-4 shadow-sm">
-            <p className="text-sm font-medium text-slate-500">Project Assets</p>
-
-            <h2 className="mt-2 text-2xl font-bold text-slate-800">
-              {projectAssets}
-            </h2>
-
-            <p className="mt-1 text-xs text-slate-400">
-              Design, code, datasets
-            </p>
-          </div>
-
-          <div className="rounded-2xl bg-white p-4 shadow-sm">
-            <p className="text-sm font-medium text-slate-500">References</p>
-
-            <h2 className="mt-2 text-2xl font-bold text-slate-800">
-              {referenceAssets}
-            </h2>
-
-            <p className="mt-1 text-xs text-slate-400">
-              Journals, videos, links
-            </p>
-          </div>
+                <p
+                  className="mt-2 text-xs"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  {item.description}
+                </p>
+              </div>
+            );
+          })}
         </div>
 
         {/* MAIN GRID */}
         <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
           {/* ADD ASSET FORM */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm xl:col-span-1">
+          <div className="gf-card p-6 xl:col-span-1">
             <div>
-              <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Add New Asset
               </p>
 
-              <h2 className="mt-2 text-xl font-bold text-slate-800">
+              <h2
+                className="mt-2 text-xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
                 Save Resource
               </h2>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p
+                className="mt-1 text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Add a useful link or reference so you can find it again later.
               </p>
             </div>
 
             <div className="mt-6 flex flex-col gap-4">
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Asset Title
                 </label>
 
@@ -255,12 +454,17 @@ export default function AssetsPage() {
                     setAssetTitle(event.target.value);
                     setAssetError("");
                   }}
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Asset URL
                 </label>
 
@@ -272,13 +476,18 @@ export default function AssetsPage() {
                     setAssetUrl(event.target.value);
                     setAssetError("");
                   }}
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-1">
                 <div>
-                  <label className="text-sm font-medium text-slate-700">
+                  <label
+                    className="text-sm font-medium"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     Category
                   </label>
 
@@ -287,7 +496,7 @@ export default function AssetsPage() {
                     onChange={(event) =>
                       setAssetCategory(event.target.value as AssetCategory)
                     }
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                    className="gf-input mt-2"
                   >
                     <option value="Skripsi">Skripsi</option>
                     <option value="Project">Project</option>
@@ -299,7 +508,12 @@ export default function AssetsPage() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-slate-700">
+                  <label
+                    className="text-sm font-medium"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     Type
                   </label>
 
@@ -308,7 +522,7 @@ export default function AssetsPage() {
                     onChange={(event) =>
                       setAssetType(event.target.value as AssetType)
                     }
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                    className="gf-input mt-2"
                   >
                     <option value="Document">Document</option>
                     <option value="Design">Design</option>
@@ -324,7 +538,12 @@ export default function AssetsPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Description
                 </label>
 
@@ -332,7 +551,7 @@ export default function AssetsPage() {
                   placeholder="Short note about this asset..."
                   value={assetDescription}
                   onChange={(event) => setAssetDescription(event.target.value)}
-                  className="mt-2 min-h-28 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2 min-h-28 resize-none"
                 />
               </div>
 
@@ -341,7 +560,13 @@ export default function AssetsPage() {
               </AppButton>
 
               {assetError && (
-                <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                <p
+                  className="rounded-xl px-4 py-3 text-sm font-medium"
+                  style={{
+                    background: "var(--gf-danger-soft)",
+                    color: "var(--gf-danger)",
+                  }}
+                >
                   {assetError}
                 </p>
               )}
@@ -349,23 +574,44 @@ export default function AssetsPage() {
           </div>
 
           {/* ASSET LIBRARY */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm xl:col-span-2">
+          <div className="gf-card p-6 xl:col-span-2">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Asset Library
                 </p>
 
-                <h2 className="mt-2 text-xl font-bold text-slate-800">
+                <h2
+                  className="mt-2 text-xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Saved Resources
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p
+                  className="mt-1 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Search and filter your saved resources.
                 </p>
               </div>
 
-              <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
+              <div
+                className="w-fit rounded-xl px-3 py-2 text-xs font-semibold"
+                style={{
+                  background: "var(--gf-surface)",
+                  color: "var(--gf-muted)",
+                }}
+              >
                 {filteredAssets.length} Items
               </div>
             </div>
@@ -373,7 +619,12 @@ export default function AssetsPage() {
             {/* SEARCH + FILTER */}
             <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-3">
               <div className="md:col-span-2">
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Search
                 </label>
 
@@ -382,12 +633,17 @@ export default function AssetsPage() {
                   placeholder="Search by title, description, or URL..."
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Category Filter
                 </label>
 
@@ -398,7 +654,7 @@ export default function AssetsPage() {
                       event.target.value as AssetCategory | "All",
                     )
                   }
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 >
                   <option value="All">All Categories</option>
                   <option value="Skripsi">Skripsi</option>
@@ -413,83 +669,114 @@ export default function AssetsPage() {
 
             {/* ASSET LIST */}
             {assets.length === 0 && (
-              <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-                <p className="text-sm font-semibold text-slate-700">
-                  No assets saved yet.
-                </p>
-
-                <p className="mt-1 text-xs text-slate-500">
-                  Add your first resource link from the form on the left.
-                </p>
+              <div className="mt-6">
+                <EmptyState
+                  title="No assets saved yet."
+                  description="Add your first resource link from the form on the left."
+                />
               </div>
             )}
 
             {assets.length > 0 && filteredAssets.length === 0 && (
-              <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-                <p className="text-sm font-semibold text-slate-700">
-                  No matching assets found.
-                </p>
-
-                <p className="mt-1 text-xs text-slate-500">
-                  Try changing your search keyword or category filter.
-                </p>
+              <div className="mt-6">
+                <EmptyState
+                  title="No matching assets found."
+                  description="Try changing your search keyword or category filter."
+                />
               </div>
             )}
 
             {filteredAssets.length > 0 && (
               <div className="mt-6 grid grid-cols-1 gap-3">
-                {filteredAssets.map((asset) => (
-                  <div
-                    key={asset.id}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:shadow-md"
-                  >
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
-                            {asset.category}
-                          </span>
+                {filteredAssets.map((asset) => {
+                  const categoryStyle = getCategoryStyle(asset.category);
+                  const typeStyle = getTypeStyle(asset.type);
 
-                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">
-                            {asset.type}
-                          </span>
+                  return (
+                    <div
+                      key={asset.id}
+                      className="rounded-2xl border p-4 transition hover:-translate-y-0.5"
+                      style={{
+                        background: "var(--gf-card-soft)",
+                        borderColor: "var(--gf-border)",
+                        boxShadow: "var(--gf-shadow-sm)",
+                      }}
+                    >
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span
+                              className="gf-badge"
+                              style={{
+                                background: categoryStyle.background,
+                                color: categoryStyle.color,
+                              }}
+                            >
+                              {asset.category}
+                            </span>
+
+                            <span
+                              className="gf-badge"
+                              style={{
+                                background: typeStyle.background,
+                                color: typeStyle.color,
+                              }}
+                            >
+                              {asset.type}
+                            </span>
+                          </div>
+
+                          <h3
+                            className="mt-3 text-lg font-semibold"
+                            style={{
+                              color: "var(--gf-ink)",
+                            }}
+                          >
+                            {asset.title}
+                          </h3>
+
+                          {asset.description && (
+                            <p
+                              className="mt-1 text-sm"
+                              style={{
+                                color: "var(--gf-muted)",
+                              }}
+                            >
+                              {asset.description}
+                            </p>
+                          )}
+
+                          <p
+                            className="mt-2 truncate text-xs"
+                            style={{
+                              color: "var(--gf-muted)",
+                            }}
+                          >
+                            {asset.url}
+                          </p>
                         </div>
 
-                        <h3 className="mt-3 text-lg font-bold text-slate-800">
-                          {asset.title}
-                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          <AppButton
+                            variant="secondary"
+                            size="md"
+                            onClick={() => openAssetLink(asset.url)}
+                          >
+                            Open
+                          </AppButton>
 
-                        {asset.description && (
-                          <p className="mt-1 text-sm text-slate-500">
-                            {asset.description}
-                          </p>
-                        )}
-
-                        <p className="mt-2 truncate text-xs text-slate-400">
-                          {asset.url}
-                        </p>
-                      </div>
-
-                      <div className="flex flex-wrap gap-2">
-                        <AppButton
-                          variant="secondary"
-                          size="md"
-                          onClick={() => openAssetLink(asset.url)}
-                        >
-                          Open
-                        </AppButton>
-
-                        <AppButton
-                          variant="danger"
-                          size="icon"
-                          onClick={() => setAssetToDelete(asset)}
-                        >
-                          🗑
-                        </AppButton>
+                          <AppButton
+                            variant="danger"
+                            size="icon"
+                            onClick={() => setAssetToDelete(asset)}
+                          >
+                            🗑
+                          </AppButton>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

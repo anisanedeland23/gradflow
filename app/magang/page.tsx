@@ -128,7 +128,6 @@ export default function MagangPage() {
 
   const openAddModal = () => {
     resetForm();
-
     setIsModalOpen(true);
   };
 
@@ -147,7 +146,6 @@ export default function MagangPage() {
 
   const closeModal = () => {
     resetForm();
-
     setIsModalOpen(false);
   };
 
@@ -246,27 +244,45 @@ export default function MagangPage() {
   };
 
   // ===============================
-  // STATUS COLOR
+  // STATUS STYLE
   // ===============================
-  const getStatusColor = (status: string) => {
-    switch (status) {
+  const getStatusStyle = (internshipStatus: string) => {
+    switch (internshipStatus) {
       case "Wishlist":
-        return "bg-slate-100 text-slate-700";
+        return {
+          background: "var(--gf-surface)",
+          color: "var(--gf-muted)",
+        };
 
       case "Applied":
-        return "bg-blue-100 text-blue-700";
+        return {
+          background: "var(--gf-sky)",
+          color: "var(--gf-link)",
+        };
 
       case "Interview":
-        return "bg-yellow-100 text-yellow-700";
+        return {
+          background: "var(--gf-yellow-soft)",
+          color: "var(--gf-warning)",
+        };
 
       case "Accepted":
-        return "bg-green-100 text-green-700";
+        return {
+          background: "var(--gf-success-soft)",
+          color: "var(--gf-success)",
+        };
 
       case "Rejected":
-        return "bg-red-100 text-red-700";
+        return {
+          background: "var(--gf-danger-soft)",
+          color: "var(--gf-danger)",
+        };
 
       default:
-        return "bg-slate-100 text-slate-700";
+        return {
+          background: "var(--gf-surface)",
+          color: "var(--gf-muted)",
+        };
     }
   };
 
@@ -302,23 +318,73 @@ export default function MagangPage() {
 
       <section className="min-h-screen p-3 pt-20 sm:p-4 sm:pt-20 lg:ml-72 lg:p-5">
         {/* PAGE HEADER */}
-        <div className="rounded-3xl bg-white p-6 shadow-sm">
-          <h1 className="text-3xl font-bold text-slate-800">
-            Internship Tracker
-          </h1>
+        <div className="gf-panel p-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Internship Tracker
+              </p>
 
-          <p className="mt-2 text-slate-500">
-            Track your internship applications, status, and deadlines.
-          </p>
+              <h1
+                className="mt-2 text-3xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Career pipeline
+              </h1>
+
+              <p
+                className="mt-2 text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Track your internship applications, status, deadlines, and
+                follow-up opportunities.
+              </p>
+            </div>
+
+            <div
+              className="w-fit rounded-2xl px-4 py-3 text-sm font-bold"
+              style={{
+                background: "var(--gf-mint)",
+                color: "var(--gf-success)",
+              }}
+            >
+              Internship Board
+            </div>
+          </div>
 
           {/* ACTION BAR */}
-          <div className="mt-6 flex flex-col gap-4 rounded-3xl bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div
+            className="mt-6 flex flex-col gap-4 rounded-3xl border p-4 sm:flex-row sm:items-center sm:justify-between"
+            style={{
+              background: "var(--gf-card-soft)",
+              borderColor: "var(--gf-border)",
+            }}
+          >
             <div>
-              <h2 className="text-lg font-bold text-slate-800">
+              <h2
+                className="text-lg font-semibold"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
                 Application Manager
               </h2>
 
-              <p className="text-sm text-slate-500">
+              <p
+                className="text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Manage all companies you want to apply to.
               </p>
             </div>
@@ -330,15 +396,34 @@ export default function MagangPage() {
         </div>
 
         {/* APPLICATION LIST */}
-        <div className="mt-4 rounded-3xl bg-white p-6 shadow-sm">
+        <div className="gf-card mt-4 p-6">
           {/* LIST HEADER */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-lg font-bold text-slate-800">
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Internship Applications
+              </p>
+
+              <h2
+                className="mt-2 text-xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Application list
               </h2>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p
+                className="mt-1 text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Your application list will appear here.
               </p>
             </div>
@@ -347,7 +432,7 @@ export default function MagangPage() {
               <select
                 value={selectedStatus}
                 onChange={(event) => setSelectedStatus(event.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-blue-500 sm:w-auto"
+                className="gf-input w-full sm:w-auto"
               >
                 <option value="All">All</option>
                 <option value="Wishlist">Wishlist</option>
@@ -357,7 +442,13 @@ export default function MagangPage() {
                 <option value="Rejected">Rejected</option>
               </select>
 
-              <div className="w-full rounded-xl bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600 sm:w-auto">
+              <div
+                className="w-full rounded-xl px-3 py-2 text-sm font-medium sm:w-auto"
+                style={{
+                  background: "var(--gf-surface)",
+                  color: "var(--gf-muted)",
+                }}
+              >
                 {filteredInternships.length} Applications
               </div>
             </div>
@@ -375,65 +466,96 @@ export default function MagangPage() {
 
           {/* APPLICATION ITEMS */}
           <div className="mt-6 grid gap-3">
-            {sortedInternships.map((internship) => (
-              <div
-                key={internship.id}
-                className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 transition hover:shadow-md sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div>
-                  <h3 className="font-semibold text-slate-800">
-                    {internship.company}
-                  </h3>
+            {sortedInternships.map((internship) => {
+              const statusStyle = getStatusStyle(internship.status);
 
-                  <p className="mt-1 text-sm text-slate-500">
-                    {internship.role}
-                  </p>
-
-                  {internship.deadline && (
-                    <p className="mt-1 text-xs text-slate-400">
-                      Deadline: {internship.deadline}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  <span
-                    className={`rounded-xl px-3 py-2 text-xs font-semibold ${getStatusColor(
-                      internship.status,
-                    )}`}
-                  >
-                    {internship.status}
-                  </span>
-
-                  {internship.link && (
-                    <a
-                      href={internship.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-200"
+              return (
+                <div
+                  key={internship.id}
+                  className="flex flex-col gap-4 rounded-2xl border p-4 transition hover:-translate-y-0.5 sm:flex-row sm:items-center sm:justify-between"
+                  style={{
+                    background: "var(--gf-card-soft)",
+                    borderColor: "var(--gf-border)",
+                    boxShadow: "var(--gf-shadow-sm)",
+                  }}
+                >
+                  <div className="min-w-0">
+                    <h3
+                      className="font-semibold"
+                      style={{
+                        color: "var(--gf-ink)",
+                      }}
                     >
-                      Open Link
-                    </a>
-                  )}
+                      {internship.company}
+                    </h3>
 
-                  <AppButton
-                    variant="warning"
-                    size="icon"
-                    onClick={() => openEditModal(internship)}
-                  >
-                    ✏️
-                  </AppButton>
+                    <p
+                      className="mt-1 text-sm"
+                      style={{
+                        color: "var(--gf-muted)",
+                      }}
+                    >
+                      {internship.role}
+                    </p>
 
-                  <AppButton
-                    variant="danger"
-                    size="icon"
-                    onClick={() => setInternshipToDelete(internship)}
-                  >
-                    🗑
-                  </AppButton>
+                    {internship.deadline && (
+                      <p
+                        className="mt-1 text-xs"
+                        style={{
+                          color: "var(--gf-muted)",
+                        }}
+                      >
+                        Deadline: {internship.deadline}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className="gf-badge"
+                      style={{
+                        background: statusStyle.background,
+                        color: statusStyle.color,
+                      }}
+                    >
+                      {internship.status}
+                    </span>
+
+                    {internship.link && (
+                      <a
+                        href={internship.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-lg border px-3 py-2 text-xs font-medium transition hover:-translate-y-0.5"
+                        style={{
+                          background: "var(--gf-card)",
+                          borderColor: "var(--gf-border-strong)",
+                          color: "var(--gf-ink)",
+                        }}
+                      >
+                        Open Link
+                      </a>
+                    )}
+
+                    <AppButton
+                      variant="warning"
+                      size="icon"
+                      onClick={() => openEditModal(internship)}
+                    >
+                      ✏️
+                    </AppButton>
+
+                    <AppButton
+                      variant="danger"
+                      size="icon"
+                      onClick={() => setInternshipToDelete(internship)}
+                    >
+                      🗑
+                    </AppButton>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -441,15 +563,41 @@ export default function MagangPage() {
       {/* ADD / EDIT APPLICATION MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-sm sm:items-center">
-          <div className="my-6 w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+          <div
+            className="my-6 w-full max-w-md rounded-3xl border p-6 shadow-2xl"
+            style={{
+              background: "var(--gf-card)",
+              borderColor: "var(--gf-border)",
+              color: "var(--gf-ink)",
+            }}
+          >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold text-slate-800">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  {editingInternship ? "Edit application" : "New application"}
+                </p>
+
+                <h2
+                  className="mt-2 text-2xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   {editingInternship ? "Edit Application" : "Add Application"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
-                  Track a new internship opportunity
+                <p
+                  className="mt-1 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  Track a new internship opportunity.
                 </p>
               </div>
 
@@ -458,7 +606,12 @@ export default function MagangPage() {
 
             <div className="mt-6 flex flex-col gap-4">
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Company
                 </label>
 
@@ -467,12 +620,17 @@ export default function MagangPage() {
                   placeholder="Example: Tokopedia"
                   value={company}
                   onChange={(event) => setCompany(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Role
                 </label>
 
@@ -481,19 +639,24 @@ export default function MagangPage() {
                   placeholder="Example: Frontend Intern"
                   value={role}
                   onChange={(event) => setRole(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Status
                 </label>
 
                 <select
                   value={status}
                   onChange={(event) => setStatus(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 >
                   <option value="Wishlist">Wishlist</option>
                   <option value="Applied">Applied</option>
@@ -504,7 +667,12 @@ export default function MagangPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Deadline
                 </label>
 
@@ -512,12 +680,17 @@ export default function MagangPage() {
                   type="date"
                   value={deadline}
                   onChange={(event) => setDeadline(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Link
                 </label>
 
@@ -526,12 +699,18 @@ export default function MagangPage() {
                   placeholder="https://..."
                   value={link}
                   onChange={(event) => setLink(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               {applicationError && (
-                <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                <p
+                  className="rounded-xl px-4 py-3 text-sm font-medium"
+                  style={{
+                    background: "var(--gf-danger-soft)",
+                    color: "var(--gf-danger)",
+                  }}
+                >
                   {applicationError}
                 </p>
               )}

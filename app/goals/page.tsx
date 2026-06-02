@@ -79,7 +79,6 @@ export default function GoalsPage() {
 
   const openAddModal = () => {
     resetForm();
-
     setIsModalOpen(true);
   };
 
@@ -99,7 +98,6 @@ export default function GoalsPage() {
 
   const closeModal = () => {
     resetForm();
-
     setIsModalOpen(false);
   };
 
@@ -221,49 +219,82 @@ export default function GoalsPage() {
   };
 
   // ===============================
-  // CATEGORY COLOR
+  // CATEGORY STYLE
   // ===============================
-  const getCategoryColor = (category: string) => {
+  const getCategoryStyle = (category: string) => {
     switch (category) {
       case "Academic":
-        return "bg-blue-100 text-blue-700";
+        return {
+          background: "var(--gf-sky)",
+          color: "var(--gf-link)",
+        };
 
       case "Career":
-        return "bg-emerald-100 text-emerald-700";
+        return {
+          background: "var(--gf-mint)",
+          color: "var(--gf-success)",
+        };
 
       case "Project":
-        return "bg-purple-100 text-purple-700";
+        return {
+          background: "var(--gf-lavender)",
+          color: "var(--gf-primary)",
+        };
 
       case "Skill":
-        return "bg-orange-100 text-orange-700";
+        return {
+          background: "var(--gf-peach)",
+          color: "var(--gf-warning)",
+        };
 
       case "Personal":
-        return "bg-pink-100 text-pink-700";
+        return {
+          background: "var(--gf-rose)",
+          color: "var(--gf-danger)",
+        };
 
       default:
-        return "bg-slate-100 text-slate-700";
+        return {
+          background: "var(--gf-surface)",
+          color: "var(--gf-muted)",
+        };
     }
   };
 
   // ===============================
-  // STATUS COLOR
+  // STATUS STYLE
   // ===============================
-  const getStatusColor = (status: string) => {
-    switch (status) {
+  const getStatusStyle = (goalStatus: string) => {
+    switch (goalStatus) {
       case "Not Started":
-        return "bg-slate-100 text-slate-700";
+        return {
+          background: "var(--gf-surface)",
+          color: "var(--gf-muted)",
+        };
 
       case "In Progress":
-        return "bg-yellow-100 text-yellow-700";
+        return {
+          background: "var(--gf-yellow-soft)",
+          color: "var(--gf-warning)",
+        };
 
       case "Completed":
-        return "bg-green-100 text-green-700";
+        return {
+          background: "var(--gf-success-soft)",
+          color: "var(--gf-success)",
+        };
 
       case "Paused":
-        return "bg-red-100 text-red-700";
+        return {
+          background: "var(--gf-danger-soft)",
+          color: "var(--gf-danger)",
+        };
 
       default:
-        return "bg-slate-100 text-slate-700";
+        return {
+          background: "var(--gf-surface)",
+          color: "var(--gf-muted)",
+        };
     }
   };
 
@@ -289,21 +320,73 @@ export default function GoalsPage() {
 
       <section className="min-h-screen p-3 pt-20 sm:p-4 sm:pt-20 lg:ml-72 lg:p-5">
         {/* PAGE HEADER */}
-        <div className="rounded-3xl bg-white p-6 shadow-sm">
-          <h1 className="text-3xl font-bold text-slate-800">Goals</h1>
+        <div className="gf-panel p-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Goals
+              </p>
 
-          <p className="mt-2 text-slate-500">
-            Track your academic, career, project, and personal goals.
-          </p>
+              <h1
+                className="mt-2 text-3xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Goal system
+              </h1>
+
+              <p
+                className="mt-2 text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Track your academic, career, project, skill, and personal
+                progress in one place.
+              </p>
+            </div>
+
+            <div
+              className="w-fit rounded-2xl px-4 py-3 text-sm font-bold"
+              style={{
+                background: "var(--gf-lavender)",
+                color: "var(--gf-primary)",
+              }}
+            >
+              Long-term Target
+            </div>
+          </div>
 
           {/* ACTION BAR */}
-          <div className="mt-6 flex flex-col gap-4 rounded-3xl bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div
+            className="mt-6 flex flex-col gap-4 rounded-3xl border p-4 sm:flex-row sm:items-center sm:justify-between"
+            style={{
+              background: "var(--gf-card-soft)",
+              borderColor: "var(--gf-border)",
+            }}
+          >
             <div>
-              <h2 className="text-lg font-bold text-slate-800">
+              <h2
+                className="text-lg font-semibold"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
                 Goals Manager
               </h2>
 
-              <p className="text-sm text-slate-500">
+              <p
+                className="text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Create goals and monitor your progress.
               </p>
             </div>
@@ -315,17 +398,44 @@ export default function GoalsPage() {
         </div>
 
         {/* GOALS LIST */}
-        <div className="mt-4 rounded-3xl bg-white p-6 shadow-sm">
+        <div className="gf-card mt-4 p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-lg font-bold text-slate-800">Goal List</h2>
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Goal List
+              </p>
 
-              <p className="mt-1 text-sm text-slate-500">
-                Your active goals will appear here.
+              <h2
+                className="mt-2 text-xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Active direction
+              </h2>
+
+              <p
+                className="mt-1 text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Your goals will appear here.
               </p>
             </div>
 
-            <div className="w-fit rounded-xl bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600">
+            <div
+              className="w-fit rounded-xl px-3 py-2 text-sm font-medium"
+              style={{
+                background: "var(--gf-surface)",
+                color: "var(--gf-muted)",
+              }}
+            >
               {goals.length} Goals
             </div>
           </div>
@@ -345,36 +455,58 @@ export default function GoalsPage() {
             {sortedGoals.map((goal) => {
               const percentage = getGoalPercentage(goal.progress, goal.target);
 
+              const categoryStyle = getCategoryStyle(goal.category);
+              const statusStyle = getStatusStyle(goal.status);
+
               return (
                 <div
                   key={goal.id}
-                  className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:shadow-md"
+                  className="rounded-2xl border p-5 transition hover:-translate-y-0.5"
+                  style={{
+                    background: "var(--gf-card-soft)",
+                    borderColor: "var(--gf-border)",
+                    boxShadow: "var(--gf-shadow-sm)",
+                  }}
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <h3 className="font-semibold text-slate-800">
+                    <div className="min-w-0">
+                      <h3
+                        className="font-semibold"
+                        style={{
+                          color: "var(--gf-ink)",
+                        }}
+                      >
                         {goal.title}
                       </h3>
 
                       <div className="mt-2 flex flex-wrap items-center gap-2">
                         <span
-                          className={`rounded-xl px-3 py-2 text-xs font-semibold ${getCategoryColor(
-                            goal.category,
-                          )}`}
+                          className="gf-badge"
+                          style={{
+                            background: categoryStyle.background,
+                            color: categoryStyle.color,
+                          }}
                         >
                           {goal.category}
                         </span>
 
                         <span
-                          className={`rounded-xl px-3 py-2 text-xs font-semibold ${getStatusColor(
-                            goal.status,
-                          )}`}
+                          className="gf-badge"
+                          style={{
+                            background: statusStyle.background,
+                            color: statusStyle.color,
+                          }}
                         >
                           {goal.status}
                         </span>
 
                         {goal.deadline && (
-                          <span className="text-xs text-slate-500">
+                          <span
+                            className="text-xs"
+                            style={{
+                              color: "var(--gf-muted)",
+                            }}
+                          >
                             Deadline: {goal.deadline}
                           </span>
                         )}
@@ -383,11 +515,21 @@ export default function GoalsPage() {
 
                     <div className="flex flex-col gap-3 sm:items-end">
                       <div className="text-left sm:text-right">
-                        <p className="text-sm font-semibold text-slate-800">
+                        <p
+                          className="text-sm font-semibold"
+                          style={{
+                            color: "var(--gf-ink)",
+                          }}
+                        >
                           {goal.progress}/{goal.target}
                         </p>
 
-                        <p className="text-xs text-slate-500">
+                        <p
+                          className="text-xs"
+                          style={{
+                            color: "var(--gf-muted)",
+                          }}
+                        >
                           {percentage}% completed
                         </p>
                       </div>
@@ -412,15 +554,20 @@ export default function GoalsPage() {
                     </div>
                   </div>
 
-                  <div className="mt-4 h-3 overflow-hidden rounded-full bg-slate-100">
+                  <div
+                    className="mt-4 h-3 overflow-hidden rounded-full"
+                    style={{
+                      background: "var(--gf-surface)",
+                    }}
+                  >
                     <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        goal.status === "Completed"
-                          ? "bg-green-600"
-                          : "bg-blue-600"
-                      }`}
+                      className="h-full rounded-full transition-all duration-500"
                       style={{
                         width: `${percentage}%`,
+                        background:
+                          goal.status === "Completed"
+                            ? "var(--gf-success)"
+                            : "var(--gf-primary)",
                       }}
                     />
                   </div>
@@ -434,15 +581,41 @@ export default function GoalsPage() {
       {/* ADD / EDIT GOAL MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-sm sm:items-center">
-          <div className="my-6 w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+          <div
+            className="my-6 w-full max-w-md rounded-3xl border p-6 shadow-2xl"
+            style={{
+              background: "var(--gf-card)",
+              borderColor: "var(--gf-border)",
+              color: "var(--gf-ink)",
+            }}
+          >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold text-slate-800">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  {editingGoal ? "Edit goal" : "New goal"}
+                </p>
+
+                <h2
+                  className="mt-2 text-2xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   {editingGoal ? "Edit Goal" : "Add Goal"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
-                  Define your target and track the progress
+                <p
+                  className="mt-1 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  Define your target and track the progress.
                 </p>
               </div>
 
@@ -451,7 +624,12 @@ export default function GoalsPage() {
 
             <div className="mt-6 flex flex-col gap-4">
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Goal Title
                 </label>
 
@@ -460,19 +638,24 @@ export default function GoalsPage() {
                   placeholder="Example: Apply 10 internships"
                   value={title}
                   onChange={(event) => setTitle(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Category
                 </label>
 
                 <select
                   value={category}
                   onChange={(event) => setCategory(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 >
                   <option value="Academic">Academic</option>
                   <option value="Career">Career</option>
@@ -483,7 +666,12 @@ export default function GoalsPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Current Progress
                 </label>
 
@@ -493,12 +681,17 @@ export default function GoalsPage() {
                   placeholder="Example: 4"
                   value={progress}
                   onChange={(event) => setProgress(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Target
                 </label>
 
@@ -508,12 +701,17 @@ export default function GoalsPage() {
                   placeholder="Example: 10"
                   value={target}
                   onChange={(event) => setTarget(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Deadline
                 </label>
 
@@ -521,19 +719,24 @@ export default function GoalsPage() {
                   type="date"
                   value={deadline}
                   onChange={(event) => setDeadline(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Status
                 </label>
 
                 <select
                   value={status}
                   onChange={(event) => setStatus(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 >
                   <option value="Not Started">Not Started</option>
                   <option value="In Progress">In Progress</option>
@@ -543,7 +746,13 @@ export default function GoalsPage() {
               </div>
 
               {goalError && (
-                <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                <p
+                  className="rounded-xl px-4 py-3 text-sm font-medium"
+                  style={{
+                    background: "var(--gf-danger-soft)",
+                    color: "var(--gf-danger)",
+                  }}
+                >
                   {goalError}
                 </p>
               )}

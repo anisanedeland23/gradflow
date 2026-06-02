@@ -45,8 +45,6 @@ export default function TtuPage() {
   // ===============================
   // TTU PROFILE STATES
   // ===============================
-  // Data utama TTU/Skripsi:
-  // link Google Docs, status pengerjaan, dan next action.
   const [documentLink, setDocumentLink] = useState("");
   const [status, setStatus] = useState<TtuProfile["status"]>("Planning");
   const [nextAction, setNextAction] = useState("");
@@ -55,13 +53,11 @@ export default function TtuPage() {
   // ===============================
   // TTU CHAPTER STATES
   // ===============================
-  // chapters menyimpan status setiap bab TTU/Skripsi.
   const [chapters, setChapters] = useState<TtuChapter[]>(defaultChapters);
 
   // ===============================
   // TTU REVISION STATES
   // ===============================
-  // revisions menyimpan checklist revisi khusus TTU/Skripsi.
   const [revisions, setRevisions] = useState<TtuRevision[]>([]);
   const [revisionText, setRevisionText] = useState("");
   const [revisionError, setRevisionError] = useState("");
@@ -72,7 +68,6 @@ export default function TtuPage() {
   // ===============================
   // TTU GUIDANCE NOTE STATES
   // ===============================
-  // guidanceNotes menyimpan catatan bimbingan TTU/Skripsi.
   const [guidanceNotes, setGuidanceNotes] = useState<TtuGuidanceNote[]>([]);
   const [guidanceDate, setGuidanceDate] = useState("");
   const [lecturer, setLecturer] = useState("");
@@ -84,7 +79,6 @@ export default function TtuPage() {
   // ===============================
   // TTU DEADLINE STATES
   // ===============================
-  // deadlines menyimpan tanggal penting TTU/Skripsi.
   const [deadlines, setDeadlines] = useState<TtuDeadline[]>([]);
   const [deadlineTitle, setDeadlineTitle] = useState("");
   const [deadlineDate, setDeadlineDate] = useState("");
@@ -99,7 +93,6 @@ export default function TtuPage() {
   // LOAD TTU DATA
   // ===============================
   useEffect(() => {
-    // LOAD PROFILE
     const savedProfile = localStorage.getItem(STORAGE_KEYS.ttuProfile);
 
     if (savedProfile) {
@@ -110,7 +103,6 @@ export default function TtuPage() {
       setNextAction(parsedProfile.nextAction);
     }
 
-    // LOAD CHAPTERS
     const savedChapters = localStorage.getItem(STORAGE_KEYS.ttuChapters);
 
     if (savedChapters) {
@@ -124,7 +116,6 @@ export default function TtuPage() {
       );
     }
 
-    // LOAD REVISIONS
     const savedRevisions = localStorage.getItem(STORAGE_KEYS.ttuRevisions);
 
     if (savedRevisions) {
@@ -133,7 +124,6 @@ export default function TtuPage() {
       setRevisions(parsedRevisions);
     }
 
-    // LOAD GUIDANCE NOTES
     const savedGuidanceNotes = localStorage.getItem(
       STORAGE_KEYS.ttuGuidanceNotes,
     );
@@ -145,7 +135,6 @@ export default function TtuPage() {
       setGuidanceNotes(parsedGuidanceNotes);
     }
 
-    // LOAD DEADLINES
     const savedDeadlines = localStorage.getItem(STORAGE_KEYS.ttuDeadlines);
 
     if (savedDeadlines) {
@@ -186,7 +175,6 @@ export default function TtuPage() {
   // ===============================
   // UPDATE CHAPTER STATUS
   // ===============================
-  // Mengubah status chapter dan langsung menyimpannya ke localStorage.
   const updateChapterStatus = (
     chapterId: number,
     newStatus: TtuChapter["status"],
@@ -405,6 +393,89 @@ export default function TtuPage() {
     setDeadlineToDelete(null);
   };
 
+  // ===============================
+  // UI HELPERS
+  // ===============================
+  const getChapterStatusStyle = (chapterStatus: TtuChapter["status"]) => {
+    switch (chapterStatus) {
+      case "Not Started":
+        return {
+          background: "var(--gf-surface)",
+          color: "var(--gf-muted)",
+        };
+
+      case "Drafting":
+        return {
+          background: "var(--gf-sky)",
+          color: "var(--gf-link)",
+        };
+
+      case "Review":
+        return {
+          background: "var(--gf-yellow-soft)",
+          color: "var(--gf-warning)",
+        };
+
+      case "Revision":
+        return {
+          background: "var(--gf-danger-soft)",
+          color: "var(--gf-danger)",
+        };
+
+      case "Done":
+        return {
+          background: "var(--gf-success-soft)",
+          color: "var(--gf-success)",
+        };
+
+      default:
+        return {
+          background: "var(--gf-surface)",
+          color: "var(--gf-muted)",
+        };
+    }
+  };
+
+  const getDeadlineTypeStyle = (type: TtuDeadline["type"]) => {
+    switch (type) {
+      case "Guidance":
+        return {
+          background: "var(--gf-mint)",
+          color: "var(--gf-success)",
+        };
+
+      case "Submission":
+        return {
+          background: "var(--gf-sky)",
+          color: "var(--gf-link)",
+        };
+
+      case "Seminar":
+        return {
+          background: "var(--gf-lavender)",
+          color: "var(--gf-primary)",
+        };
+
+      case "Defense":
+        return {
+          background: "var(--gf-danger-soft)",
+          color: "var(--gf-danger)",
+        };
+
+      case "Revision":
+        return {
+          background: "var(--gf-yellow-soft)",
+          color: "var(--gf-warning)",
+        };
+
+      default:
+        return {
+          background: "var(--gf-surface)",
+          color: "var(--gf-muted)",
+        };
+    }
+  };
+
   return (
     <main className="gf-page">
       {/* SIDEBAR */}
@@ -413,21 +484,46 @@ export default function TtuPage() {
       {/* MAIN CONTENT */}
       <section className="min-h-screen p-3 pt-20 sm:p-4 sm:pt-20 lg:ml-72 lg:p-5">
         {/* PAGE HEADER */}
-        <div className="rounded-3xl bg-white p-6 shadow-sm">
+        <div className="gf-panel p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-800">
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 TTU / Skripsi
+              </p>
+
+              <h1
+                className="mt-2 text-3xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Skripsi control center
               </h1>
 
-              <p className="mt-2 text-slate-500">
+              <p
+                className="mt-2 max-w-3xl text-sm"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 Control center for your final project document, revisions,
-                guidance notes, and important deadlines.
+                guidance notes, chapter progress, and important deadlines.
               </p>
             </div>
 
-            <div className="w-fit rounded-2xl bg-blue-100 px-4 py-3 text-sm font-bold text-blue-700">
-              Skripsi Control Center
+            <div
+              className="w-fit rounded-2xl px-4 py-3 text-sm font-bold"
+              style={{
+                background: "var(--gf-lavender)",
+                color: "var(--gf-primary)",
+              }}
+            >
+              Academic Thesis
             </div>
           </div>
         </div>
@@ -435,36 +531,68 @@ export default function TtuPage() {
         {/* TOP CONTROL GRID */}
         <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
           {/* MAIN DOCUMENT LINK */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm xl:col-span-2">
+          <div className="gf-card p-6 xl:col-span-2">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Main Document
                 </p>
 
-                <h2 className="mt-2 text-xl font-bold text-slate-800">
+                <h2
+                  className="mt-2 text-xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   TTU Google Docs
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p
+                  className="mt-1 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Save your main TTU / Skripsi document link here so it is easy
                   to access.
                 </p>
               </div>
 
               <div
-                className={`rounded-xl px-3 py-2 text-xs font-semibold ${
-                  documentLink.trim() !== ""
-                    ? "bg-green-100 text-green-700"
-                    : "bg-slate-100 text-slate-600"
-                }`}
+                className="rounded-xl px-3 py-2 text-xs font-semibold"
+                style={{
+                  background:
+                    documentLink.trim() !== ""
+                      ? "var(--gf-success-soft)"
+                      : "var(--gf-surface)",
+                  color:
+                    documentLink.trim() !== ""
+                      ? "var(--gf-success)"
+                      : "var(--gf-muted)",
+                }}
               >
                 {documentLink.trim() !== "" ? "Linked" : "Not linked yet"}
               </div>
             </div>
 
-            <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-5">
-              <label className="text-sm font-medium text-slate-700">
+            <div
+              className="mt-6 rounded-3xl border border-dashed p-5"
+              style={{
+                background: "var(--gf-card-soft)",
+                borderColor: "var(--gf-border)",
+              }}
+            >
+              <label
+                className="text-sm font-medium"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
                 Google Docs Link
               </label>
 
@@ -476,7 +604,7 @@ export default function TtuPage() {
                   setDocumentLink(event.target.value);
                   setProfileMessage("");
                 }}
-                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                className="gf-input mt-2"
               />
 
               <div className="mt-4 flex flex-col gap-3 sm:flex-row">
@@ -497,18 +625,33 @@ export default function TtuPage() {
           </div>
 
           {/* STATUS + NEXT ACTION */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+          <div className="gf-card p-6">
+            <p
+              className="text-xs font-bold uppercase tracking-wide"
+              style={{
+                color: "var(--gf-muted)",
+              }}
+            >
               Current Focus
             </p>
 
-            <h2 className="mt-2 text-xl font-bold text-slate-800">
+            <h2
+              className="mt-2 text-xl font-semibold tracking-tight"
+              style={{
+                color: "var(--gf-ink)",
+              }}
+            >
               Status & Next Action
             </h2>
 
             <div className="mt-5 flex flex-col gap-4">
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   TTU Status
                 </label>
 
@@ -518,7 +661,7 @@ export default function TtuPage() {
                     setStatus(event.target.value as TtuProfile["status"]);
                     setProfileMessage("");
                   }}
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 >
                   <option value="Planning">Planning</option>
                   <option value="Drafting">Drafting</option>
@@ -529,7 +672,12 @@ export default function TtuPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Next Action
                 </label>
 
@@ -540,7 +688,7 @@ export default function TtuPage() {
                     setNextAction(event.target.value);
                     setProfileMessage("");
                   }}
-                  className="mt-2 min-h-28 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2 min-h-28 resize-none"
                 />
               </div>
 
@@ -550,11 +698,15 @@ export default function TtuPage() {
 
               {profileMessage && (
                 <p
-                  className={`rounded-xl px-4 py-3 text-sm font-medium ${
-                    profileMessage.includes("saved")
-                      ? "bg-green-50 text-green-700"
-                      : "bg-red-50 text-red-600"
-                  }`}
+                  className="rounded-xl px-4 py-3 text-sm font-medium"
+                  style={{
+                    background: profileMessage.includes("saved")
+                      ? "var(--gf-success-soft)"
+                      : "var(--gf-danger-soft)",
+                    color: profileMessage.includes("saved")
+                      ? "var(--gf-success)"
+                      : "var(--gf-danger)",
+                  }}
                 >
                   {profileMessage}
                 </p>
@@ -566,90 +718,172 @@ export default function TtuPage() {
         {/* MIDDLE GRID */}
         <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
           {/* CHAPTER PROGRESS */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm xl:col-span-2">
+          <div className="gf-card p-6 xl:col-span-2">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Chapter Progress
                 </p>
 
-                <h2 className="mt-2 text-xl font-bold text-slate-800">
+                <h2
+                  className="mt-2 text-xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Skripsi Chapters
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p
+                  className="mt-1 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Track the status of each chapter from planning to done.
                 </p>
               </div>
 
-              <div className="rounded-xl bg-green-100 px-3 py-2 text-xs font-bold text-green-700">
+              <div
+                className="rounded-xl px-3 py-2 text-xs font-bold"
+                style={{
+                  background: "var(--gf-success-soft)",
+                  color: "var(--gf-success)",
+                }}
+              >
                 {doneChapters}/{chapters.length} Done
               </div>
             </div>
 
             <div className="mt-6 flex flex-col gap-3">
-              {chapters.map((chapter) => (
-                <div
-                  key={chapter.id}
-                  className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div>
-                    <h3 className="font-semibold text-slate-800">
-                      {chapter.title}
-                    </h3>
+              {chapters.map((chapter) => {
+                const statusStyle = getChapterStatusStyle(chapter.status);
 
-                    <p className="mt-1 text-xs text-slate-500">
-                      Update this chapter status as your writing progresses.
-                    </p>
-                  </div>
-
-                  <select
-                    value={chapter.status}
-                    onChange={(event) =>
-                      updateChapterStatus(
-                        chapter.id,
-                        event.target.value as TtuChapter["status"],
-                      )
-                    }
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 sm:w-44"
+                return (
+                  <div
+                    key={chapter.id}
+                    className="flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center sm:justify-between"
+                    style={{
+                      background: "var(--gf-card-soft)",
+                      borderColor: "var(--gf-border)",
+                      boxShadow: "var(--gf-shadow-sm)",
+                    }}
                   >
-                    <option value="Not Started">Not Started</option>
-                    <option value="Drafting">Drafting</option>
-                    <option value="Review">Review</option>
-                    <option value="Revision">Revision</option>
-                    <option value="Done">Done</option>
-                  </select>
-                </div>
-              ))}
+                    <div>
+                      <h3
+                        className="font-semibold"
+                        style={{
+                          color: "var(--gf-ink)",
+                        }}
+                      >
+                        {chapter.title}
+                      </h3>
+
+                      <p
+                        className="mt-1 text-xs"
+                        style={{
+                          color: "var(--gf-muted)",
+                        }}
+                      >
+                        Update this chapter status as your writing progresses.
+                      </p>
+
+                      <span
+                        className="gf-badge mt-2 inline-flex"
+                        style={{
+                          background: statusStyle.background,
+                          color: statusStyle.color,
+                        }}
+                      >
+                        {chapter.status}
+                      </span>
+                    </div>
+
+                    <select
+                      value={chapter.status}
+                      onChange={(event) =>
+                        updateChapterStatus(
+                          chapter.id,
+                          event.target.value as TtuChapter["status"],
+                        )
+                      }
+                      className="gf-input w-full sm:w-44"
+                    >
+                      <option value="Not Started">Not Started</option>
+                      <option value="Drafting">Drafting</option>
+                      <option value="Review">Review</option>
+                      <option value="Revision">Revision</option>
+                      <option value="Done">Done</option>
+                    </select>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           {/* IMPORTANT DEADLINES */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <div className="gf-card p-6">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Important Dates
                 </p>
 
-                <h2 className="mt-2 text-xl font-bold text-slate-800">
+                <h2
+                  className="mt-2 text-xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   TTU Deadlines
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p
+                  className="mt-1 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Keep your critical academic dates visible.
                 </p>
               </div>
 
-              <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
+              <div
+                className="rounded-xl px-3 py-2 text-xs font-semibold"
+                style={{
+                  background: "var(--gf-surface)",
+                  color: "var(--gf-muted)",
+                }}
+              >
                 {deadlines.length}
               </div>
             </div>
 
             {/* ADD DEADLINE FORM */}
-            <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-5">
+            <div
+              className="mt-6 rounded-3xl border border-dashed p-5"
+              style={{
+                background: "var(--gf-card-soft)",
+                borderColor: "var(--gf-border)",
+              }}
+            >
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Deadline Title
                 </label>
 
@@ -661,13 +895,18 @@ export default function TtuPage() {
                     setDeadlineTitle(event.target.value);
                     setDeadlineError("");
                   }}
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-1">
                 <div>
-                  <label className="text-sm font-medium text-slate-700">
+                  <label
+                    className="text-sm font-medium"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     Date
                   </label>
 
@@ -678,12 +917,17 @@ export default function TtuPage() {
                       setDeadlineDate(event.target.value);
                       setDeadlineError("");
                     }}
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                    className="gf-input mt-2"
                   />
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-slate-700">
+                  <label
+                    className="text-sm font-medium"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     Type
                   </label>
 
@@ -695,7 +939,7 @@ export default function TtuPage() {
                       );
                       setDeadlineError("");
                     }}
-                    className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                    className="gf-input mt-2"
                   >
                     <option value="Guidance">Guidance</option>
                     <option value="Submission">Submission</option>
@@ -719,7 +963,13 @@ export default function TtuPage() {
               </div>
 
               {deadlineError && (
-                <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                <p
+                  className="mt-3 rounded-xl px-4 py-3 text-sm font-medium"
+                  style={{
+                    background: "var(--gf-danger-soft)",
+                    color: "var(--gf-danger)",
+                  }}
+                >
                   {deadlineError}
                 </p>
               )}
@@ -727,51 +977,95 @@ export default function TtuPage() {
 
             {/* DEADLINE LIST */}
             {deadlines.length === 0 && (
-              <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
-                <p className="text-sm font-semibold text-slate-700">
-                  No deadline yet.
-                </p>
+              <div className="mt-6">
+                <div
+                  className="rounded-2xl border border-dashed p-5 text-center"
+                  style={{
+                    background: "var(--gf-card-soft)",
+                    borderColor: "var(--gf-border)",
+                  }}
+                >
+                  <p
+                    className="text-sm font-semibold"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
+                    No deadline yet.
+                  </p>
 
-                <p className="mt-1 text-xs text-slate-500">
-                  Add seminar, submission, guidance, or revision dates.
-                </p>
+                  <p
+                    className="mt-1 text-xs"
+                    style={{
+                      color: "var(--gf-muted)",
+                    }}
+                  >
+                    Add seminar, submission, guidance, or revision dates.
+                  </p>
+                </div>
               </div>
             )}
 
             {deadlines.length > 0 && (
               <div className="mt-6 flex flex-col gap-3">
-                {deadlines.map((deadline) => (
-                  <div
-                    key={deadline.id}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                  >
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <div>
-                        <h3 className="font-semibold text-slate-800">
-                          {deadline.title}
-                        </h3>
+                {deadlines.map((deadline) => {
+                  const deadlineStyle = getDeadlineTypeStyle(deadline.type);
 
-                        <div className="mt-2 flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">
-                            {deadline.date}
-                          </span>
+                  return (
+                    <div
+                      key={deadline.id}
+                      className="rounded-2xl border p-4"
+                      style={{
+                        background: "var(--gf-card-soft)",
+                        borderColor: "var(--gf-border)",
+                        boxShadow: "var(--gf-shadow-sm)",
+                      }}
+                    >
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                          <h3
+                            className="font-semibold"
+                            style={{
+                              color: "var(--gf-ink)",
+                            }}
+                          >
+                            {deadline.title}
+                          </h3>
 
-                          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
-                            {deadline.type}
-                          </span>
+                          <div className="mt-2 flex flex-wrap items-center gap-2">
+                            <span
+                              className="gf-badge"
+                              style={{
+                                background: "var(--gf-surface)",
+                                color: "var(--gf-muted)",
+                              }}
+                            >
+                              {deadline.date}
+                            </span>
+
+                            <span
+                              className="gf-badge"
+                              style={{
+                                background: deadlineStyle.background,
+                                color: deadlineStyle.color,
+                              }}
+                            >
+                              {deadline.type}
+                            </span>
+                          </div>
                         </div>
-                      </div>
 
-                      <AppButton
-                        variant="danger"
-                        size="icon"
-                        onClick={() => setDeadlineToDelete(deadline)}
-                      >
-                        🗑
-                      </AppButton>
+                        <AppButton
+                          variant="danger"
+                          size="icon"
+                          onClick={() => setDeadlineToDelete(deadline)}
+                        >
+                          🗑
+                        </AppButton>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -780,37 +1074,76 @@ export default function TtuPage() {
         {/* LOWER GRID */}
         <div className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-2">
           {/* REVISION CHECKLIST */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <div className="gf-card p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Revision Checklist
                 </p>
 
-                <h2 className="mt-2 text-xl font-bold text-slate-800">
+                <h2
+                  className="mt-2 text-xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Action Items
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p
+                  className="mt-1 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Turn guidance feedback into clear revision tasks.
                 </p>
               </div>
 
-              <div className="rounded-xl bg-orange-100 px-3 py-2 text-xs font-bold text-orange-700">
+              <div
+                className="rounded-xl px-3 py-2 text-xs font-bold"
+                style={{
+                  background: "var(--gf-yellow-soft)",
+                  color: "var(--gf-warning)",
+                }}
+              >
                 {pendingRevisions} Pending
               </div>
             </div>
 
             {revisions.length === 0 && (
-              <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
-                <p className="text-sm font-semibold text-slate-700">
-                  No revision tasks yet.
-                </p>
+              <div className="mt-6">
+                <div
+                  className="rounded-2xl border border-dashed p-5 text-center"
+                  style={{
+                    background: "var(--gf-card-soft)",
+                    borderColor: "var(--gf-border)",
+                  }}
+                >
+                  <p
+                    className="text-sm font-semibold"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
+                    No revision tasks yet.
+                  </p>
 
-                <p className="mt-1 text-xs text-slate-500">
-                  Add tasks like “perbaiki latar belakang” or “tambahkan
-                  jurnal”.
-                </p>
+                  <p
+                    className="mt-1 text-xs"
+                    style={{
+                      color: "var(--gf-muted)",
+                    }}
+                  >
+                    Add tasks like “perbaiki latar belakang” or “tambahkan
+                    jurnal”.
+                  </p>
+                </div>
               </div>
             )}
 
@@ -819,22 +1152,30 @@ export default function TtuPage() {
                 {revisions.map((revision) => (
                   <div
                     key={revision.id}
-                    className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    className="flex flex-col gap-3 rounded-2xl border p-4 sm:flex-row sm:items-center sm:justify-between"
+                    style={{
+                      background: "var(--gf-card-soft)",
+                      borderColor: "var(--gf-border)",
+                      boxShadow: "var(--gf-shadow-sm)",
+                    }}
                   >
                     <label className="flex cursor-pointer items-start gap-3">
                       <input
                         type="checkbox"
                         checked={revision.completed}
                         onChange={() => toggleRevision(revision.id)}
-                        className="mt-1 h-4 w-4 accent-blue-600"
+                        className="mt-1 h-4 w-4 accent-[var(--gf-primary)]"
                       />
 
                       <span
                         className={`text-sm font-medium ${
-                          revision.completed
-                            ? "text-slate-400 line-through"
-                            : "text-slate-700"
+                          revision.completed ? "line-through" : ""
                         }`}
+                        style={{
+                          color: revision.completed
+                            ? "var(--gf-muted)"
+                            : "var(--gf-ink)",
+                        }}
                       >
                         {revision.text}
                       </span>
@@ -861,7 +1202,7 @@ export default function TtuPage() {
                   setRevisionText(event.target.value);
                   setRevisionError("");
                 }}
-                className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                className="gf-input w-full"
               />
 
               <AppButton variant="primary" size="lg" onClick={addRevision}>
@@ -870,37 +1211,69 @@ export default function TtuPage() {
             </div>
 
             {revisionError && (
-              <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+              <p
+                className="mt-3 rounded-xl px-4 py-3 text-sm font-medium"
+                style={{
+                  background: "var(--gf-danger-soft)",
+                  color: "var(--gf-danger)",
+                }}
+              >
                 {revisionError}
               </p>
             )}
           </div>
 
           {/* GUIDANCE NOTES */}
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <div className="gf-card p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Guidance Notes
                 </p>
 
-                <h2 className="mt-2 text-xl font-bold text-slate-800">
+                <h2
+                  className="mt-2 text-xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Bimbingan Log
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p
+                  className="mt-1 text-sm"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
                   Record feedback and notes from your thesis advisor.
                 </p>
               </div>
 
-              <div className="rounded-xl bg-purple-100 px-3 py-2 text-xs font-bold text-purple-700">
+              <div
+                className="rounded-xl px-3 py-2 text-xs font-bold"
+                style={{
+                  background: "var(--gf-lavender)",
+                  color: "var(--gf-primary)",
+                }}
+              >
                 {guidanceNotes.length} Notes
               </div>
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Guidance Date
                 </label>
 
@@ -911,12 +1284,17 @@ export default function TtuPage() {
                     setGuidanceDate(event.target.value);
                     setGuidanceError("");
                   }}
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700">
+                <label
+                  className="text-sm font-medium"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
                   Lecturer
                 </label>
 
@@ -928,13 +1306,18 @@ export default function TtuPage() {
                     setLecturer(event.target.value);
                     setGuidanceError("");
                   }}
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                  className="gf-input mt-2"
                 />
               </div>
             </div>
 
             <div className="mt-4">
-              <label className="text-sm font-medium text-slate-700">
+              <label
+                className="text-sm font-medium"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
                 Notes
               </label>
 
@@ -945,7 +1328,7 @@ export default function TtuPage() {
                   setGuidanceNoteText(event.target.value);
                   setGuidanceError("");
                 }}
-                className="mt-2 min-h-28 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500"
+                className="gf-input mt-2 min-h-28 resize-none"
               />
             </div>
 
@@ -960,21 +1343,45 @@ export default function TtuPage() {
               </AppButton>
 
               {guidanceError && (
-                <p className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                <p
+                  className="mt-3 rounded-xl px-4 py-3 text-sm font-medium"
+                  style={{
+                    background: "var(--gf-danger-soft)",
+                    color: "var(--gf-danger)",
+                  }}
+                >
                   {guidanceError}
                 </p>
               )}
             </div>
 
             {guidanceNotes.length === 0 && (
-              <div className="mt-6 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center">
-                <p className="text-sm font-semibold text-slate-700">
-                  No guidance notes yet.
-                </p>
+              <div className="mt-6">
+                <div
+                  className="rounded-2xl border border-dashed p-5 text-center"
+                  style={{
+                    background: "var(--gf-card-soft)",
+                    borderColor: "var(--gf-border)",
+                  }}
+                >
+                  <p
+                    className="text-sm font-semibold"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
+                    No guidance notes yet.
+                  </p>
 
-                <p className="mt-1 text-xs text-slate-500">
-                  Save feedback from your advisor after each guidance session.
-                </p>
+                  <p
+                    className="mt-1 text-xs"
+                    style={{
+                      color: "var(--gf-muted)",
+                    }}
+                  >
+                    Save feedback from your advisor after each guidance session.
+                  </p>
+                </div>
               </div>
             )}
 
@@ -983,21 +1390,43 @@ export default function TtuPage() {
                 {guidanceNotes.map((guidanceNote) => (
                   <div
                     key={guidanceNote.id}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                    className="rounded-2xl border p-4"
+                    style={{
+                      background: "var(--gf-card-soft)",
+                      borderColor: "var(--gf-border)",
+                      boxShadow: "var(--gf-shadow-sm)",
+                    }}
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-700">
+                          <span
+                            className="gf-badge"
+                            style={{
+                              background: "var(--gf-lavender)",
+                              color: "var(--gf-primary)",
+                            }}
+                          >
                             {guidanceNote.date}
                           </span>
 
-                          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+                          <span
+                            className="gf-badge"
+                            style={{
+                              background: "var(--gf-surface)",
+                              color: "var(--gf-muted)",
+                            }}
+                          >
                             {guidanceNote.lecturer}
                           </span>
                         </div>
 
-                        <p className="mt-3 whitespace-pre-line text-sm text-slate-700">
+                        <p
+                          className="mt-3 whitespace-pre-line text-sm"
+                          style={{
+                            color: "var(--gf-ink)",
+                          }}
+                        >
                           {guidanceNote.note}
                         </p>
                       </div>
