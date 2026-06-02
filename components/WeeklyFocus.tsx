@@ -17,6 +17,17 @@ type WeeklyFocusProps = {
   goals: Goal[];
 };
 
+type FocusTone = "sky" | "danger" | "lavender" | "mint" | "peach";
+
+type FocusItem = {
+  id: string;
+  label: string;
+  type: string;
+  note: string;
+  icon: string;
+  tone: FocusTone;
+};
+
 export default function WeeklyFocus({
   tasks,
   internships,
@@ -102,39 +113,73 @@ export default function WeeklyFocus({
     .filter((goal) => goal.status !== "Completed")
     .slice(0, 1);
 
+  const toneStyles: Record<
+    FocusTone,
+    {
+      background: string;
+      color: string;
+    }
+  > = {
+    sky: {
+      background: "var(--gf-sky)",
+      color: "var(--gf-link)",
+    },
+    danger: {
+      background: "var(--gf-danger-soft)",
+      color: "var(--gf-danger)",
+    },
+    lavender: {
+      background: "var(--gf-lavender)",
+      color: "var(--gf-primary)",
+    },
+    mint: {
+      background: "var(--gf-mint)",
+      color: "var(--gf-success)",
+    },
+    peach: {
+      background: "var(--gf-peach)",
+      color: "var(--gf-warning)",
+    },
+  };
+
   // ===============================
   // COMBINE FOCUS ITEMS
   // ===============================
   // Semua data focus digabung menjadi satu array
   // supaya UI bisa dirender dengan .map().
-  const focusItems = [
+  const focusItems: FocusItem[] = [
     ...pendingTasks.map((task) => ({
       id: `task-${task.id}`,
       label: task.text,
       type: "Task",
       note: task.deadline ? `Deadline: ${task.deadline}` : "No deadline",
-      color: "bg-blue-100 text-blue-700",
+      icon: "✓",
+      tone: "sky" as FocusTone,
     })),
 
-    ...thisWeekEvents.map((event) => ({
-      id: `event-${event.id}`,
-      label: event.title,
-      type: event.type,
-      note: `Date: ${event.date}`,
-      color:
+    ...thisWeekEvents.map((event) => {
+      const isDeadline =
         event.type === "assignment" ||
         event.type === "quiz" ||
-        event.type === "test"
-          ? "bg-red-100 text-red-700"
-          : "bg-purple-100 text-purple-700",
-    })),
+        event.type === "test";
+
+      return {
+        id: `event-${event.id}`,
+        label: event.title,
+        type: event.type,
+        note: `Date: ${event.date}`,
+        icon: isDeadline ? "⏰" : "▣",
+        tone: isDeadline ? ("danger" as FocusTone) : ("lavender" as FocusTone),
+      };
+    }),
 
     ...activeInternships.map((internship) => ({
       id: `internship-${internship.id}`,
       label: internship.company,
       type: "Internship",
       note: `${internship.role} • ${internship.status}`,
-      color: "bg-green-100 text-green-700",
+      icon: "◇",
+      tone: "mint" as FocusTone,
     })),
 
     ...activeGoals.map((goal) => ({
@@ -142,23 +187,51 @@ export default function WeeklyFocus({
       label: goal.title,
       type: "Goal",
       note: `${goal.progress}/${goal.target} progress`,
-      color: "bg-orange-100 text-orange-700",
+      icon: "◎",
+      tone: "peach" as FocusTone,
     })),
   ];
 
   return (
-    <div className="rounded-2xl bg-white p-3 shadow-sm">
+    <section className="gf-card p-5">
       {/* HEADER */}
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-slate-800">Weekly Focus</h2>
+          <p
+            className="text-xs font-bold uppercase tracking-wide"
+            style={{
+              color: "var(--gf-muted)",
+            }}
+          >
+            Weekly Focus
+          </p>
 
-          <p className="mt-1 text-sm text-slate-500">
-            What needs your attention this week
+          <h2
+            className="mt-2 text-xl font-semibold tracking-tight"
+            style={{
+              color: "var(--gf-ink)",
+            }}
+          >
+            This week&apos;s attention list
+          </h2>
+
+          <p
+            className="mt-1 text-sm"
+            style={{
+              color: "var(--gf-muted)",
+            }}
+          >
+            Tasks, calendar items, applications, and goals that need care.
           </p>
         </div>
 
-        <div className="rounded-xl bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-600">
+        <div
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-sm font-bold"
+          style={{
+            background: "var(--gf-lavender)",
+            color: "var(--gf-primary)",
+          }}
+        >
           {focusItems.length}
         </div>
       </div>
@@ -175,30 +248,71 @@ export default function WeeklyFocus({
       )}
 
       {/* FOCUS LIST */}
-      <div className="mt-5 flex flex-col gap-3">
-        {focusItems.map((item) => (
-          <div
-            key={item.id}
-            className="rounded-2xl border border-slate-200 bg-white p-4 transition hover:shadow-md"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <h3 className="text-sm font-semibold text-slate-800">
-                  {item.label}
-                </h3>
+      {focusItems.length > 0 && (
+        <div className="mt-5 flex flex-col gap-3">
+          {focusItems.map((item) => {
+            const tone = toneStyles[item.tone];
 
-                <p className="mt-1 text-xs text-slate-500">{item.note}</p>
-              </div>
-
-              <span
-                className={`rounded-xl px-3 py-2 text-xs font-semibold ${item.color}`}
+            return (
+              <div
+                key={item.id}
+                className="rounded-2xl border p-4 transition hover:-translate-y-0.5"
+                style={{
+                  background: "var(--gf-card-soft)",
+                  borderColor: "var(--gf-border)",
+                  boxShadow: "var(--gf-shadow-sm)",
+                }}
               >
-                {item.type}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+                <div className="flex items-start gap-3">
+                  <div
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-base"
+                    style={{
+                      background: tone.background,
+                      color: tone.color,
+                    }}
+                  >
+                    {item.icon}
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="min-w-0">
+                        <h3
+                          className="truncate text-sm font-semibold"
+                          style={{
+                            color: "var(--gf-ink)",
+                          }}
+                        >
+                          {item.label}
+                        </h3>
+
+                        <p
+                          className="mt-1 text-xs"
+                          style={{
+                            color: "var(--gf-muted)",
+                          }}
+                        >
+                          {item.note}
+                        </p>
+                      </div>
+
+                      <span
+                        className="gf-badge w-fit shrink-0"
+                        style={{
+                          background: tone.background,
+                          color: tone.color,
+                        }}
+                      >
+                        {item.type}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </section>
   );
 }

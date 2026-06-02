@@ -12,6 +12,15 @@ type ProgressOverviewProps = {
   goalsProgress: number;
 };
 
+type ProgressItem = {
+  label: string;
+  description: string;
+  value: number;
+  icon: string;
+  softColor: string;
+  accentColor: string;
+};
+
 export default function ProgressOverview({
   progressPercentage,
   internshipProgress,
@@ -19,105 +28,162 @@ export default function ProgressOverview({
 }: ProgressOverviewProps) {
   // safeTaskProgress dipakai supaya kalau data error / kosong,
   // tampilan tidak menjadi NaN%.
-  // Kalau progressPercentage bernilai NaN, undefined, atau 0,
-  // maka fallback-nya adalah 0.
   const safeTaskProgress = progressPercentage || 0;
 
   // safeInternshipProgress juga dibuat aman.
-  // Jadi progress bar internship tidak akan rusak walaupun belum ada data magang.
   const safeInternshipProgress = internshipProgress || 0;
 
   // safeGoalsProgress juga aman dari NaN.
-  // Kalau belum ada goals, tampilannya akan 0%.
   const safeGoalsProgress = goalsProgress || 0;
 
+  const progressItems: ProgressItem[] = [
+    {
+      label: "Today Focus",
+      description: "Daily academic actions",
+      value: safeTaskProgress,
+      icon: "✦",
+      softColor: "var(--gf-sky)",
+      accentColor: "var(--gf-link)",
+    },
+    {
+      label: "Internship",
+      description: "Career pipeline progress",
+      value: safeInternshipProgress,
+      icon: "◇",
+      softColor: "var(--gf-peach)",
+      accentColor: "var(--gf-warning)",
+    },
+    {
+      label: "Goals",
+      description: "Long-term target progress",
+      value: safeGoalsProgress,
+      icon: "◎",
+      softColor: "var(--gf-lavender)",
+      accentColor: "var(--gf-primary)",
+    },
+  ];
+
   return (
-    <div className="rounded-2xl bg-white p-3 shadow-sm">
-      {/* Judul utama card */}
-      <h2 className="text-lg font-bold text-slate-800">Progress Overview</h2>
-
-      {/* Deskripsi kecil di bawah judul */}
-      <p className="mt-1 text-sm text-gray-500">
-        Track your academic and career growth
-      </p>
-
-      {/* Wrapper untuk semua progress item */}
-      <div className="mt-5 flex flex-col gap-4">
-        {/* ========================= */}
-        {/* 1. TODAY FOCUS PROGRESS */}
-        {/* ========================= */}
-
+    <section className="gf-card p-5">
+      {/* HEADER */}
+      <div className="flex items-start justify-between gap-4">
         <div>
-          {/* Header kecil: nama progress + persen */}
-          <div className="flex items-center justify-between">
-            <h3 className="font-medium text-slate-700">Today Focus Progress</h3>
+          <p
+            className="text-xs font-bold uppercase tracking-wide"
+            style={{
+              color: "var(--gf-muted)",
+            }}
+          >
+            Progress Overview
+          </p>
 
-            <span className="text-sm font-semibold text-blue-600">
-              {Math.round(safeTaskProgress)}%
-            </span>
-          </div>
+          <h2
+            className="mt-2 text-xl font-semibold tracking-tight"
+            style={{
+              color: "var(--gf-ink)",
+            }}
+          >
+            Academic & career flow
+          </h2>
 
-          {/* Background progress bar */}
-          <div className="mt-2 h-3 rounded-full bg-slate-200">
-            {/* Isi progress bar */}
-            {/* Width berubah sesuai nilai safeTaskProgress */}
-            <div
-              className="h-full rounded-full bg-blue-600 transition-all duration-500"
-              style={{
-                width: `${safeTaskProgress}%`,
-              }}
-            />
-          </div>
+          <p
+            className="mt-1 text-sm"
+            style={{
+              color: "var(--gf-muted)",
+            }}
+          >
+            Track how today&apos;s actions connect to bigger goals.
+          </p>
         </div>
 
-        {/* ========================= */}
-        {/* 2. INTERNSHIP PROGRESS */}
-        {/* ========================= */}
-
-        <div>
-          <div className="flex items-center justify-between">
-            <h3 className="font-medium text-slate-700">Internship Progress</h3>
-
-            <span className="text-sm font-semibold text-green-600">
-              {Math.round(safeInternshipProgress)}%
-            </span>
-          </div>
-
-          <div className="mt-2 h-3 rounded-full bg-slate-200">
-            {/* Warna hijau karena ini berkaitan dengan career/magang */}
-            <div
-              className="h-full rounded-full bg-green-500 transition-all duration-500"
-              style={{
-                width: `${safeInternshipProgress}%`,
-              }}
-            />
-          </div>
-        </div>
-
-        {/* ========================= */}
-        {/* 3. GOALS PROGRESS */}
-        {/* ========================= */}
-
-        <div>
-          <div className="flex items-center justify-between">
-            <h3 className="font-medium text-slate-700">Goals Progress</h3>
-
-            <span className="text-sm font-semibold text-purple-600">
-              {Math.round(safeGoalsProgress)}%
-            </span>
-          </div>
-
-          <div className="mt-2 h-3 rounded-full bg-slate-200">
-            {/* Warna ungu karena ini mewakili goal besar / long-term target */}
-            <div
-              className="h-full rounded-full bg-purple-500 transition-all duration-500"
-              style={{
-                width: `${safeGoalsProgress}%`,
-              }}
-            />
-          </div>
+        <div
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-lg"
+          style={{
+            background: "var(--gf-primary-soft)",
+            color: "var(--gf-primary)",
+          }}
+        >
+          📊
         </div>
       </div>
-    </div>
+
+      {/* PROGRESS ITEMS */}
+      <div className="mt-6 flex flex-col gap-4">
+        {progressItems.map((item) => {
+          const roundedValue = Math.round(item.value);
+
+          return (
+            <div
+              key={item.label}
+              className="rounded-2xl border p-4"
+              style={{
+                background: "var(--gf-card-soft)",
+                borderColor: "var(--gf-border)",
+              }}
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-base"
+                  style={{
+                    background: item.softColor,
+                    color: item.accentColor,
+                  }}
+                >
+                  {item.icon}
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h3
+                        className="text-sm font-semibold"
+                        style={{
+                          color: "var(--gf-ink)",
+                        }}
+                      >
+                        {item.label}
+                      </h3>
+
+                      <p
+                        className="mt-0.5 text-xs"
+                        style={{
+                          color: "var(--gf-muted)",
+                        }}
+                      >
+                        {item.description}
+                      </p>
+                    </div>
+
+                    <span
+                      className="text-sm font-bold"
+                      style={{
+                        color: item.accentColor,
+                      }}
+                    >
+                      {roundedValue}%
+                    </span>
+                  </div>
+
+                  <div
+                    className="mt-3 h-3 overflow-hidden rounded-full"
+                    style={{
+                      background: "var(--gf-surface)",
+                    }}
+                  >
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${Math.min(roundedValue, 100)}%`,
+                        background: item.accentColor,
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }

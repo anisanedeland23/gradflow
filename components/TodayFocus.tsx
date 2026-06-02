@@ -228,19 +228,58 @@ export default function TodayFocus({
   // Kalau showAllTasks false, tampilkan 6 task pertama.
   const visibleTasks = showAllTasks ? sortedTasks : sortedTasks.slice(0, 6);
 
+  const progressPercentage =
+    tasks.length === 0 ? 0 : Math.round((completedTasks / tasks.length) * 100);
+
   return (
     <>
       {/* ===============================
           MAIN CARD
           =============================== */}
-      <div className="rounded-2xl bg-slate-950 p-4 text-white shadow-sm">
+      <section className="gf-panel overflow-hidden p-5">
         {/* HEADER */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <h2 className="text-lg font-bold">Today Focus</h2>
+            <div className="flex items-center gap-2">
+              <span
+                className="flex h-10 w-10 items-center justify-center rounded-2xl text-lg"
+                style={{
+                  background: "var(--gf-primary-soft)",
+                  color: "var(--gf-primary)",
+                }}
+              >
+                ✦
+              </span>
 
-            <p className="text-sm text-slate-400">
-              {completedTasks}/{tasks.length} tasks completed
+              <div>
+                <p
+                  className="text-xs font-bold uppercase tracking-wide"
+                  style={{
+                    color: "var(--gf-muted)",
+                  }}
+                >
+                  Today Focus
+                </p>
+
+                <h2
+                  className="text-xl font-semibold tracking-tight"
+                  style={{
+                    color: "var(--gf-ink)",
+                  }}
+                >
+                  Plan your next productive steps
+                </h2>
+              </div>
+            </div>
+
+            <p
+              className="mt-3 max-w-2xl text-sm"
+              style={{
+                color: "var(--gf-muted)",
+              }}
+            >
+              Keep today&apos;s tasks visible, finish the important ones first,
+              and let small progress compound.
             </p>
           </div>
 
@@ -259,8 +298,64 @@ export default function TodayFocus({
           </AppButton>
         </div>
 
+        {/* PROGRESS STRIP */}
+        <div
+          className="mt-5 rounded-2xl border p-4"
+          style={{
+            background: "var(--gf-card-soft)",
+            borderColor: "var(--gf-border)",
+          }}
+        >
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p
+                className="text-sm font-semibold"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                {completedTasks}/{tasks.length} tasks completed
+              </p>
+
+              <p
+                className="mt-1 text-xs"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Finish your core academic actions for today.
+              </p>
+            </div>
+
+            <span
+              className="gf-badge"
+              style={{
+                background: "var(--gf-mint)",
+                color: "var(--gf-success)",
+              }}
+            >
+              {progressPercentage}% done
+            </span>
+          </div>
+
+          <div
+            className="mt-4 h-3 overflow-hidden rounded-full"
+            style={{
+              background: "var(--gf-surface)",
+            }}
+          >
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${progressPercentage}%`,
+                background: "var(--gf-primary)",
+              }}
+            />
+          </div>
+        </div>
+
         {/* TASK LIST */}
-        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="mt-5 grid grid-cols-1 gap-3 xl:grid-cols-2">
           {/* EMPTY STATE */}
           {tasks.length === 0 && (
             <div className="col-span-full">
@@ -282,61 +377,112 @@ export default function TodayFocus({
             return (
               <div
                 key={task.id}
-                className={`flex items-center gap-2 rounded-lg p-2 transition hover:bg-slate-800 ${
-                  isOverdue ? "border border-red-500/40 bg-red-500/10" : ""
-                }`}
+                className="group rounded-2xl border p-4 transition hover:-translate-y-0.5"
+                style={{
+                  background: task.completed
+                    ? "var(--gf-card-soft)"
+                    : isOverdue
+                      ? "var(--gf-danger-soft)"
+                      : "var(--gf-card)",
+                  borderColor: isOverdue
+                    ? "var(--gf-danger)"
+                    : "var(--gf-border)",
+                  boxShadow: "var(--gf-shadow-sm)",
+                }}
               >
-                {/* CHECKBOX */}
-                <div
-                  onClick={() => toggleTask(task.id)}
-                  className={`flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-xs transition ${
-                    task.completed
-                      ? "border-green-500 bg-green-500"
-                      : "border-white"
-                  }`}
-                >
-                  {task.completed && "✓"}
-                </div>
-
-                {/* TASK TEXT */}
-                <div className="flex flex-1 items-center gap-2">
-                  <p
-                    className={`text-sm ${
-                      task.completed
-                        ? "text-slate-500 line-through"
-                        : "text-white"
-                    }`}
+                <div className="flex items-start gap-3">
+                  {/* CHECKBOX */}
+                  <button
+                    type="button"
+                    onClick={() => toggleTask(task.id)}
+                    className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-xs font-bold transition"
+                    style={{
+                      background: task.completed
+                        ? "var(--gf-success)"
+                        : "transparent",
+                      borderColor: task.completed
+                        ? "var(--gf-success)"
+                        : "var(--gf-border-strong)",
+                      color: task.completed ? "#ffffff" : "var(--gf-muted)",
+                    }}
+                    aria-label="Toggle task completion"
                   >
-                    {task.text}
-                  </p>
+                    {task.completed ? "✓" : ""}
+                  </button>
 
-                  {/* OVERDUE BADGE */}
-                  {isOverdue && (
-                    <span className="rounded-full bg-red-500/20 px-2 py-1 text-[10px] font-medium text-red-300">
-                      OVERDUE
-                    </span>
-                  )}
+                  {/* TASK TEXT */}
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className={`text-sm font-semibold ${
+                        task.completed ? "line-through" : ""
+                      }`}
+                      style={{
+                        color: task.completed
+                          ? "var(--gf-muted)"
+                          : "var(--gf-ink)",
+                      }}
+                    >
+                      {task.text}
+                    </p>
+
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <span
+                        className="gf-badge"
+                        style={{
+                          background: "var(--gf-sky)",
+                          color: "var(--gf-link)",
+                        }}
+                      >
+                        Deadline: {task.deadline}
+                      </span>
+
+                      {task.completed && (
+                        <span
+                          className="gf-badge"
+                          style={{
+                            background: "var(--gf-success-soft)",
+                            color: "var(--gf-success)",
+                          }}
+                        >
+                          Done
+                        </span>
+                      )}
+
+                      {isOverdue && (
+                        <span
+                          className="gf-badge"
+                          style={{
+                            background: "var(--gf-danger-soft)",
+                            color: "var(--gf-danger)",
+                          }}
+                        >
+                          Overdue
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* ACTIONS */}
+                  <div className="flex shrink-0 items-center gap-2">
+                    <AppButton
+                      variant="secondary"
+                      size="icon"
+                      onClick={() => openEditModal(task)}
+                      aria-label="Edit task"
+                    >
+                      ✏️
+                    </AppButton>
+
+                    <AppButton
+                      variant="danger"
+                      size="icon"
+                      onClick={() => setTaskToDelete(task)}
+                      aria-label="Delete task"
+                    >
+                      🗑
+                    </AppButton>
+                  </div>
                 </div>
-
-                {/* EDIT BUTTON */}
-                <AppButton
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => openEditModal(task)}
-                  className="text-blue-400 hover:text-blue-300"
-                >
-                  ✏️
-                </AppButton>
-
-                {/* DELETE BUTTON */}
-                <AppButton
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setTaskToDelete(task)}
-                  className="ml-auto text-red-400 hover:text-red-300"
-                >
-                  🗑
-                </AppButton>
               </div>
             );
           })}
@@ -344,20 +490,21 @@ export default function TodayFocus({
 
         {/* SHOW MORE / LESS */}
         {tasks.length > 6 && (
-          <AppButton
-            variant="ghost"
-            size="md"
-            onClick={() => setShowAllTasks(!showAllTasks)}
-            className="mt-4 text-blue-400 hover:text-blue-300"
-          >
-            {showAllTasks ? "Show Less ↑" : "Show More →"}
-          </AppButton>
+          <div className="mt-5">
+            <AppButton
+              variant="secondary"
+              size="md"
+              onClick={() => setShowAllTasks(!showAllTasks)}
+            >
+              {showAllTasks ? "Show Less ↑" : "Show More →"}
+            </AppButton>
+          </div>
         )}
-      </div>
+      </section>
 
       {/* ===============================
-    ADD TASK MODAL
-    =============================== */}
+          ADD TASK MODAL
+          =============================== */}
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:items-center">
@@ -392,16 +539,30 @@ export default function TodayFocus({
                 duration: 0.25,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="relative z-10 my-6 w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"
+              className="relative z-10 my-6 w-full max-w-md rounded-3xl p-6 shadow-2xl"
+              style={{
+                background: "var(--gf-card)",
+                color: "var(--gf-ink)",
+              }}
             >
               {/* MODAL HEADER */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-800">
+                  <h2
+                    className="text-2xl font-bold"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     Add New Task
                   </h2>
 
-                  <p className="mt-1 text-sm text-slate-500">
+                  <p
+                    className="mt-1 text-sm"
+                    style={{
+                      color: "var(--gf-muted)",
+                    }}
+                  >
                     Create your next productive step
                   </p>
                 </div>
@@ -413,7 +574,12 @@ export default function TodayFocus({
               <div className="mt-6 flex flex-col gap-4">
                 {/* TASK NAME INPUT */}
                 <div>
-                  <label className="text-sm font-medium text-slate-700">
+                  <label
+                    className="text-sm font-medium"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     Task Name
                   </label>
 
@@ -422,13 +588,18 @@ export default function TodayFocus({
                     placeholder="Enter task..."
                     value={newTask}
                     onChange={(e) => setNewTask(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                    className="gf-input mt-2"
                   />
                 </div>
 
                 {/* DEADLINE INPUT */}
                 <div>
-                  <label className="text-sm font-medium text-slate-700">
+                  <label
+                    className="text-sm font-medium"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     Deadline
                   </label>
 
@@ -436,13 +607,19 @@ export default function TodayFocus({
                     type="date"
                     value={deadline}
                     onChange={(e) => setDeadline(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                    className="gf-input mt-2"
                   />
                 </div>
 
                 {/* ADD ERROR MESSAGE */}
                 {addError && (
-                  <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                  <p
+                    className="rounded-xl px-4 py-3 text-sm font-medium"
+                    style={{
+                      background: "var(--gf-danger-soft)",
+                      color: "var(--gf-danger)",
+                    }}
+                  >
                     {addError}
                   </p>
                 )}
@@ -499,16 +676,30 @@ export default function TodayFocus({
                 duration: 0.25,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="relative z-10 w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"
+              className="relative z-10 w-full max-w-md rounded-3xl p-6 shadow-2xl"
+              style={{
+                background: "var(--gf-card)",
+                color: "var(--gf-ink)",
+              }}
             >
               {/* MODAL HEADER */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-800">
+                  <h2
+                    className="text-2xl font-bold"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     Edit Task
                   </h2>
 
-                  <p className="mt-1 text-sm text-slate-500">
+                  <p
+                    className="mt-1 text-sm"
+                    style={{
+                      color: "var(--gf-muted)",
+                    }}
+                  >
                     Update your task information
                   </p>
                 </div>
@@ -525,7 +716,12 @@ export default function TodayFocus({
               <div className="mt-6 flex flex-col gap-4">
                 {/* EDIT TASK NAME INPUT */}
                 <div>
-                  <label className="text-sm font-medium text-slate-700">
+                  <label
+                    className="text-sm font-medium"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     Task Name
                   </label>
 
@@ -533,13 +729,18 @@ export default function TodayFocus({
                     type="text"
                     value={editTaskName}
                     onChange={(e) => setEditTaskName(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                    className="gf-input mt-2"
                   />
                 </div>
 
                 {/* EDIT DEADLINE INPUT */}
                 <div>
-                  <label className="text-sm font-medium text-slate-700">
+                  <label
+                    className="text-sm font-medium"
+                    style={{
+                      color: "var(--gf-ink)",
+                    }}
+                  >
                     Deadline
                   </label>
 
@@ -547,13 +748,19 @@ export default function TodayFocus({
                     type="date"
                     value={editDeadline}
                     onChange={(e) => setEditDeadline(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-blue-500"
+                    className="gf-input mt-2"
                   />
                 </div>
 
                 {/* EDIT ERROR MESSAGE */}
                 {editError && (
-                  <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                  <p
+                    className="rounded-xl px-4 py-3 text-sm font-medium"
+                    style={{
+                      background: "var(--gf-danger-soft)",
+                      color: "var(--gf-danger)",
+                    }}
+                  >
                     {editError}
                   </p>
                 )}

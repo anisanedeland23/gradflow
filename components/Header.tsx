@@ -1,51 +1,110 @@
-    export default function Header() {
-    return (
+export default function Header() {
+  return (
+    <header className="gf-panel overflow-hidden p-5">
+      <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+        {/* LEFT: USER GREETING */}
+        <div className="flex items-start gap-4">
+          {/* AVATAR */}
+          <div
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border text-2xl shadow-sm"
+            style={{
+              background: "var(--gf-lavender)",
+              borderColor: "var(--gf-border)",
+              color: "var(--gf-primary)",
+            }}
+          >
+            🧑🏻‍💻
+          </div>
 
-        <div className="rounded-2xl bg-white p-3 shadow-sm">
+          {/* TEXT */}
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1
+                className="text-2xl font-semibold tracking-tight sm:text-3xl"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                Hi, Anisaaa
+              </h1>
 
-        <div className="flex items-center justify-between gap-4">
-
-            {/* LEFT */}
-            <div className="flex items-center gap-4">
-
-            {/* Avatar */}
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-200 text-2xl">
-
-                🧑🏻‍💻
-
+              <span className="text-2xl">👋</span>
             </div>
 
-            {/* Text */}
-            <div>
-
-                <h1 className="text-2xl font-bold text-slate-800">
-                Hi, Anisaaa 👋
-                </h1>
-
-                <p className="text-sm text-slate-500">
-                Informatics Engineering Student
-                </p>
-
-                <p className="text-sm font-medium text-blue-600">
-                Target Graduate: April 2027
-                </p>
-
-            </div>
-
-            </div>
-
-            {/* Quote */}
-            <div className="max-w-sm rounded-xl bg-slate-100 p-3">
-
-            <p className="text-sm leading-relaxed text-slate-700">
-                “Small progress every day still matters.”
+            <p
+              className="mt-1 text-sm"
+              style={{
+                color: "var(--gf-muted)",
+              }}
+            >
+              Informatics Engineering Student
             </p>
 
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span
+                className="gf-badge"
+                style={{
+                  background: "var(--gf-primary-soft)",
+                  color: "var(--gf-primary)",
+                }}
+              >
+                Target Graduate: April 2027
+              </span>
+
+              <span
+                className="gf-badge"
+                style={{
+                  background: "var(--gf-mint)",
+                  color: "var(--gf-success)",
+                }}
+              >
+                Academic workspace
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT: QUOTE / MOTIVATION */}
+        <div
+          className="max-w-xl rounded-2xl border p-4"
+          style={{
+            background: "var(--gf-card-soft)",
+            borderColor: "var(--gf-border)",
+          }}
+        >
+          <div className="flex items-start gap-3">
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base"
+              style={{
+                background: "var(--gf-yellow-soft)",
+                color: "var(--gf-warning)",
+              }}
+            >
+              ✨
             </div>
 
-        </div>
+            <div>
+              <p
+                className="text-xs font-semibold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Today&apos;s reminder
+              </p>
 
+              <p
+                className="mt-1 text-sm leading-relaxed"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                “Small progress every day still matters.”
+              </p>
+            </div>
+          </div>
         </div>
-
-    );
-    }
+      </div>
+    </header>
+  );
+}

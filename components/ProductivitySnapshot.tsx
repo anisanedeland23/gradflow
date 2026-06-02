@@ -15,6 +15,16 @@ type ProductivitySnapshotProps = {
   goals: Goal[];
 };
 
+type SnapshotTone = "sky" | "lavender" | "peach" | "mint";
+
+type SnapshotItem = {
+  title: string;
+  value: number;
+  description: string;
+  icon: string;
+  tone: SnapshotTone;
+};
+
 export default function ProductivitySnapshot({
   tasks,
   internships,
@@ -73,69 +83,166 @@ export default function ProductivitySnapshot({
       internship.status === "Interview",
   ).length;
 
+  const toneStyles: Record<
+    SnapshotTone,
+    {
+      background: string;
+      color: string;
+    }
+  > = {
+    sky: {
+      background: "var(--gf-sky)",
+      color: "var(--gf-link)",
+    },
+    lavender: {
+      background: "var(--gf-lavender)",
+      color: "var(--gf-primary)",
+    },
+    peach: {
+      background: "var(--gf-peach)",
+      color: "var(--gf-warning)",
+    },
+    mint: {
+      background: "var(--gf-mint)",
+      color: "var(--gf-success)",
+    },
+  };
+
   // Semua data snapshot digabung ke array
   // supaya UI bisa dirender dengan .map().
-  const snapshotItems = [
+  const snapshotItems: SnapshotItem[] = [
     {
       title: "Pending Tasks",
       value: pendingTasks,
       description: "Tasks still need action",
-      color: "bg-blue-100 text-blue-700",
+      icon: "✓",
+      tone: "sky",
     },
     {
       title: "This Week Events",
       value: thisWeekEvents,
       description: "Calendar items in 7 days",
-      color: "bg-purple-100 text-purple-700",
+      icon: "▣",
+      tone: "lavender",
     },
     {
       title: "Active Goals",
       value: activeGoals,
       description: "Goals still in progress",
-      color: "bg-orange-100 text-orange-700",
+      icon: "◎",
+      tone: "peach",
     },
     {
       title: "Internship Follow-ups",
       value: internshipFollowUps,
       description: "Applications to monitor",
-      color: "bg-green-100 text-green-700",
+      icon: "◇",
+      tone: "mint",
     },
   ];
 
   return (
-    <div className="rounded-2xl bg-white p-3 shadow-sm">
+    <section className="gf-card p-5">
       {/* HEADER */}
-      <div>
-        <h2 className="text-lg font-bold text-slate-800">
-          Productivity Snapshot
-        </h2>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p
+            className="text-xs font-bold uppercase tracking-wide"
+            style={{
+              color: "var(--gf-muted)",
+            }}
+          >
+            Productivity Snapshot
+          </p>
 
-        <p className="mt-1 text-sm text-slate-500">
-          Quick overview of your current workload
-        </p>
+          <h2
+            className="mt-2 text-xl font-semibold tracking-tight"
+            style={{
+              color: "var(--gf-ink)",
+            }}
+          >
+            Current workload
+          </h2>
+
+          <p
+            className="mt-1 text-sm"
+            style={{
+              color: "var(--gf-muted)",
+            }}
+          >
+            Quick overview of what needs your attention.
+          </p>
+        </div>
+
+        <div
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-lg"
+          style={{
+            background: "var(--gf-yellow-soft)",
+            color: "var(--gf-warning)",
+          }}
+        >
+          ⚡
+        </div>
       </div>
 
       {/* SNAPSHOT LIST */}
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        {snapshotItems.map((item) => (
-          <div
-            key={item.title}
-            className="rounded-2xl border border-slate-200 bg-white p-4 transition hover:shadow-md"
-          >
+      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {snapshotItems.map((item) => {
+          const tone = toneStyles[item.tone];
+
+          return (
             <div
-              className={`inline-flex rounded-xl px-3 py-2 text-sm font-bold ${item.color}`}
+              key={item.title}
+              className="rounded-2xl border p-4 transition hover:-translate-y-0.5"
+              style={{
+                background: "var(--gf-card-soft)",
+                borderColor: "var(--gf-border)",
+                boxShadow: "var(--gf-shadow-sm)",
+              }}
             >
-              {item.value}
+              <div className="flex items-start justify-between gap-3">
+                <div
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl text-base"
+                  style={{
+                    background: tone.background,
+                    color: tone.color,
+                  }}
+                >
+                  {item.icon}
+                </div>
+
+                <div
+                  className="rounded-xl px-3 py-2 text-sm font-bold"
+                  style={{
+                    background: tone.background,
+                    color: tone.color,
+                  }}
+                >
+                  {item.value}
+                </div>
+              </div>
+
+              <h3
+                className="mt-4 text-sm font-semibold"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                {item.title}
+              </h3>
+
+              <p
+                className="mt-1 text-xs leading-relaxed"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                {item.description}
+              </p>
             </div>
-
-            <h3 className="mt-3 text-sm font-semibold text-slate-800">
-              {item.title}
-            </h3>
-
-            <p className="mt-1 text-xs text-slate-500">{item.description}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
-    </div>
+    </section>
   );
 }

@@ -57,38 +57,112 @@ export default function ConfirmDeleteModal({
               duration: 0.25,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="relative z-10 w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"
+            className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border p-6 shadow-2xl"
+            style={{
+              background: "var(--gf-card)",
+              borderColor: "var(--gf-border)",
+              color: "var(--gf-ink)",
+            }}
           >
-            {/* HEADER */}
-            <div>
-              <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
+            {/* TOP ICON */}
+            <div
+              className="flex h-12 w-12 items-center justify-center rounded-2xl text-xl"
+              style={{
+                background: "var(--gf-danger-soft)",
+                color: "var(--gf-danger)",
+              }}
+            >
+              🗑
+            </div>
 
-              <p className="mt-2 text-sm leading-relaxed text-slate-500">
+            {/* HEADER */}
+            <div className="mt-5">
+              <p
+                className="text-xs font-bold uppercase tracking-wide"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                Confirm delete
+              </p>
+
+              <h2
+                className="mt-2 text-2xl font-semibold tracking-tight"
+                style={{
+                  color: "var(--gf-ink)",
+                }}
+              >
+                {title}
+              </h2>
+
+              <p
+                className="mt-2 text-sm leading-relaxed"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
                 {description}
               </p>
             </div>
 
             {/* ITEM PREVIEW */}
             {(itemName || itemDetail) && (
-              <div className="mt-5 rounded-2xl border border-red-100 bg-red-50 p-4">
+              <div
+                className="mt-5 rounded-2xl border p-4"
+                style={{
+                  background: "var(--gf-danger-soft)",
+                  borderColor: "var(--gf-danger)",
+                }}
+              >
                 {itemName && (
-                  <p className="text-sm font-semibold text-red-700">
+                  <p
+                    className="break-words text-sm font-semibold"
+                    style={{
+                      color: "var(--gf-danger)",
+                    }}
+                  >
                     {itemName}
                   </p>
                 )}
 
                 {itemDetail && (
-                  <p className="mt-1 text-xs text-red-500">{itemDetail}</p>
+                  <p
+                    className="mt-1 break-words text-xs"
+                    style={{
+                      color: "var(--gf-danger)",
+                    }}
+                  >
+                    {itemDetail}
+                  </p>
                 )}
               </div>
             )}
 
+            {/* WARNING MESSAGE */}
+            <div
+              className="mt-4 rounded-2xl border p-4"
+              style={{
+                background: "var(--gf-card-soft)",
+                borderColor: "var(--gf-border)",
+              }}
+            >
+              <p
+                className="text-xs leading-relaxed"
+                style={{
+                  color: "var(--gf-muted)",
+                }}
+              >
+                This action cannot be undone. Please make sure this item is no
+                longer needed before deleting it.
+              </p>
+            </div>
+
             {/* ACTION BUTTONS */}
-            <div className="mt-6 flex gap-3">
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <AppButton
                 variant="secondary"
                 size="lg"
-                fullWidth
+                className="w-full"
                 onClick={onCancel}
               >
                 Cancel
@@ -97,7 +171,7 @@ export default function ConfirmDeleteModal({
               <AppButton
                 variant="danger"
                 size="lg"
-                fullWidth
+                className="w-full"
                 onClick={onConfirm}
               >
                 Delete
