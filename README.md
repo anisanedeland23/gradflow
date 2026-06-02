@@ -1,36 +1,178 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GradFlow
 
-## Getting Started
+GradFlow is a personal academic productivity dashboard designed to help students manage their study flow, thesis progress, internship applications, goals, resources, and daily focus sessions in one workspace.
 
-First, run the development server:
+This project is built as a personal productivity system for academic and career preparation, with a calm dashboard experience and a signature **Focus Flight Pomodoro system**.
+
+---
+
+## ✨ Features
+
+### Dashboard
+
+- Today Focus task manager
+- Progress overview
+- Upcoming deadlines
+- Productivity stats
+- Weekly focus summary
+- Reminder and quick notes
+- Recent activity log
+
+### TTU / Skripsi
+
+- Main document link manager
+- Thesis status and next action tracker
+- Chapter progress tracker
+- Revision checklist
+- Guidance notes
+- Important thesis deadlines
+
+### Internship Tracker
+
+- Internship application list
+- Status tracking: Wishlist, Applied, Interview, Accepted, Rejected
+- Deadline tracking
+- Application link storage
+- Status filter
+
+### Calendar
+
+- Monthly calendar view
+- Academic events and deadlines
+- Event types: Assignment, Quiz, Test, Event, Guidance, Meeting
+- Add, edit, and delete events
+
+### Daily Log
+
+- Focus Flight Pomodoro timer
+- Focus and break/transit mode
+- Persistent global timer
+- Daily focus summary
+- Focus streak
+- Focus level and XP system
+- Focus contribution grid
+- Weekly evaluation
+- Daily reflection
+
+### Goals
+
+- Academic, career, project, skill, and personal goals
+- Progress and target tracking
+- Goal status tracking
+
+### Assets
+
+- Resource library for important links
+- Categories and types
+- Search and filter
+- Open and delete resources
+
+### Theme System
+
+- Light mode
+- Night mode
+- Token-based GradFlow design system
+
+---
+
+## 🛠️ Tech Stack
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- LocalStorage for MVP data persistence
+- Framer Motion
+- date-fns
+
+---
+
+## 🎯 Project Purpose
+
+GradFlow was created to support students who need a simple but structured system to manage academic tasks, thesis work, internship preparation, and daily productivity.
+
+The main idea is to keep everything important in one place while making the experience feel calm, focused, and motivating.
+
+---
+
+## 🚀 Getting Started
+
+Clone the repository:
+
+```bash
+git clone https://github.com/anisanedeland23/gradflow.git
+```
+
+Go to the project folder:
+
+```bash
+cd gradflow
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the app in your browser:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📁 Main Pages
 
-To learn more about Next.js, take a look at the following resources:
+```txt
+/              Dashboard
+/calendar      Calendar
+/daily-log     Daily Log
+/ttu           TTU / Skripsi
+/magang        Internship Tracker
+/goals         Goals
+/assets        Assets
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📌 Current Status
 
-## Deploy on Vercel
+GradFlow is currently in the MVP stage with a usable Phase 11 UI redesign.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Completed:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Core dashboard
+- Task management
+- Calendar
+- Internship tracker
+- Goals
+- TTU / Skripsi page
+- Assets library
+- Daily Log and Focus Flight
+- Light/Night theme system
+- Usable UI redesign
+
+Next possible improvements:
+
+- Supabase backend integration
+- Authentication
+- Cloud sync
+- Better mobile polish
+- Advanced analytics
+- Export data feature
+
+---
+
+## 👩‍💻 Author
+
+Created by **Anisa Nedeland**
+Informatics Engineering Student
+Universitas Kristen Satya Wacana
