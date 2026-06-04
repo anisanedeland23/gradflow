@@ -1,3 +1,9 @@
+## 🌐 Live Demo
+
+GradFlow is live at:
+
+https://gradflow-rosy.vercel.app
+
 # GradFlow
 
 GradFlow is a personal academic productivity dashboard designed to help students manage their study flow, thesis progress, internship applications, goals, resources, and daily focus sessions in one workspace.
