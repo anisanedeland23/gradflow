@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
+import CloudSyncPanel from "@/components/CloudSyncPanel";
 
 type NavItem = {
   label: string;
@@ -208,13 +209,9 @@ export default function Sidebar() {
           <ThemeToggle />
         </div>
 
-        {/* FOOTER */}
-        <div className="mt-4 rounded-3xl border border-white/10 bg-white/[0.04] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-          <p className="text-xs text-slate-500">Signed in as</p>
-
-          <p className="mt-1 truncate text-sm font-semibold text-white">
-            Anisa
-          </p>
+        {/* CLOUD SYNC PANEL */}
+        <div className="mt-4">
+          <CloudSyncPanel />
         </div>
       </aside>
     </>
