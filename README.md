@@ -4,6 +4,21 @@ GradFlow is live at:
 
 https://gradflow-rosy.vercel.app
 
+---
+
+## ☁️ Cloud Sync
+
+GradFlow now supports Supabase authentication and automatic cloud sync.
+
+Current sync behavior:
+
+- Users can sign up and sign in with email and password.
+- Data is automatically loaded from Supabase after login.
+- Changes are automatically saved to Supabase.
+- Data can be accessed from multiple devices using the same account.
+
+The current database strategy uses a single JSONB row per user for fast MVP development.
+
 # GradFlow
 
 GradFlow is a personal academic productivity dashboard designed to help students manage their study flow, thesis progress, internship applications, goals, resources, and daily focus sessions in one workspace.
